@@ -14,13 +14,11 @@ import { imageToImageData, loadImageFromFile, parseSvgText, vectorizeImageData, 
 import type { AnimSettings, BackgroundSettings, PickMode, SequenceGroup } from './types'
 import { Switch } from './components/ui'
 import { AuthGate } from './components/AuthGate'
+import { DocsPage } from './components/DocsPage'
 import { LoadingGate } from './components/LoadingGate'
 import { SmoothScroll } from './components/SmoothScroll'
 import type { DiscordUser } from './lib/discordAuth'
-import { DOCS_URL } from './lib/docsUrl'
-
-type Theme = 'liquid' | 'flat'
-const THEME_STORAGE_KEY = 'logo-animator-theme'
+import { THEME_STORAGE_KEY, type Theme } from './lib/theme'
 
 /** An open-book glyph for the header's Docs button — reads as "guide" without being a literal screenshot of one. */
 const DOCS_MARK = (
@@ -31,6 +29,11 @@ const DOCS_MARK = (
 )
 
 export default function App() {
+  // The docs page is public — no reason to gate the user guide behind Discord login.
+  if (window.location.pathname.startsWith('/docs')) {
+    return <DocsPage />
+  }
+
   return (
     <LoadingGate>
       <AuthGate>{(user, logout) => <AppContent user={user} onLogout={logout} />}</AuthGate>
@@ -193,7 +196,7 @@ function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => voi
           </div>
           <div className="flex shrink-0 items-center gap-3">
             <a
-              href={DOCS_URL}
+              href="/docs"
               target="_blank"
               rel="noopener noreferrer"
               title="Docs"
