@@ -116,15 +116,50 @@ function matchesQuery(entry: DocEntry, query: string): boolean {
   return haystack.includes(query)
 }
 
+function useDebouncedValue<T>(value: T, delayMs: number): T {
+  const [debounced, setDebounced] = useState(value)
+  useEffect(() => {
+    const t = window.setTimeout(() => setDebounced(value), delayMs)
+    return () => window.clearTimeout(t)
+  }, [value, delayMs])
+  return debounced
+}
+
+const HAMBURGER_ICON = (
+  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
+    <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+  </svg>
+)
+
 const SEARCH_ICON = (
-  <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-muted" fill="none" aria-hidden>
+  <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" aria-hidden>
     <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth={2} />
     <path d="M21 21l-4.3-4.3" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
   </svg>
 )
 
-function SearchBar({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+const ARROW_ICON = (
+  <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" aria-hidden>
+    <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
+/** A compact search box that expands into a results dropdown on focus — same interaction shape
+ * (debounced filter, arrow-key navigation, footer shortcut hint, icon swap while typing) as the
+ * ActionSearchBar used on other projects, rebuilt here with plain CSS instead of framer-motion so it
+ * doesn't drag in a whole animation library for one input. */
+function NavSearchBar({ onJump }: { onJump: (slug: string) => void }) {
+  const [query, setQuery] = useState('')
+  const [isFocused, setIsFocused] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
+  const debouncedQuery = useDebouncedValue(query, 150).trim().toLowerCase()
+
+  const results = useMemo(() => (debouncedQuery ? ENTRIES.filter((e) => matchesQuery(e, debouncedQuery)) : ENTRIES), [debouncedQuery])
+
+  useEffect(() => {
+    setActiveIndex(-1)
+  }, [results])
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -134,42 +169,102 @@ function SearchBar({ value, onChange }: { value: string; onChange: (v: string) =
         e.preventDefault()
         inputRef.current?.focus()
       }
-      if (e.key === 'Escape' && document.activeElement === inputRef.current) {
-        onChange('')
-        inputRef.current?.blur()
-      }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [onChange])
+  }, [])
+
+  function jumpTo(entry: DocEntry) {
+    onJump(slugify(entry.label))
+    setQuery('')
+    setIsFocused(false)
+    inputRef.current?.blur()
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (results.length === 0) return
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setActiveIndex((i) => (i < results.length - 1 ? i + 1 : 0))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setActiveIndex((i) => (i > 0 ? i - 1 : results.length - 1))
+    } else if (e.key === 'Enter' && activeIndex >= 0) {
+      e.preventDefault()
+      jumpTo(results[activeIndex])
+    } else if (e.key === 'Escape') {
+      setIsFocused(false)
+      inputRef.current?.blur()
+    }
+  }
+
+  const open = isFocused
 
   return (
-    <div className="glass-inset flex items-center gap-2.5 rounded-full px-4 py-2.5">
-      {SEARCH_ICON}
-      <input
-        ref={inputRef}
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="Search docs…"
-        className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-muted"
-      />
-      {value ? (
-        <button type="button" onClick={() => onChange('')} className="shrink-0 text-xs text-muted hover:text-accent">
-          Clear
-        </button>
-      ) : (
-        <kbd className="shrink-0 rounded border border-panel-border px-1.5 py-0.5 text-[10px] text-muted">/</kbd>
-      )}
+    <div className="relative w-full max-w-[280px]">
+      <div className="glass-inset flex items-center gap-2 rounded-full px-3.5 py-2">
+        <span className="text-muted">{query ? ARROW_ICON : SEARCH_ICON}</span>
+        <input
+          ref={inputRef}
+          type="text"
+          role="combobox"
+          aria-expanded={open}
+          aria-autocomplete="list"
+          autoComplete="off"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => window.setTimeout(() => setIsFocused(false), 150)}
+          onKeyDown={handleKeyDown}
+          placeholder="Search docs…"
+          className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-muted"
+        />
+        {!query && <kbd className="shrink-0 rounded border border-panel-border px-1.5 py-0.5 text-[10px] text-muted">/</kbd>}
+      </div>
+
+      <div
+        className={clsx(
+          'glass absolute left-0 right-0 top-[calc(100%+8px)] z-20 origin-top overflow-hidden rounded-xl transition-all duration-200',
+          open ? 'max-h-80 scale-100 opacity-100' : 'pointer-events-none max-h-0 scale-95 opacity-0',
+        )}
+      >
+        <ul role="listbox" className="max-h-64 overflow-y-auto p-1.5">
+          {results.length === 0 && <li className="px-3 py-2 text-xs text-muted">No matches</li>}
+          {results.map((entry, i) => (
+            <li
+              key={entry.label}
+              role="option"
+              aria-selected={activeIndex === i}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => jumpTo(entry)}
+              className={clsx(
+                'flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors',
+                activeIndex === i ? 'bg-accent-soft text-ink' : 'text-muted hover:bg-white/5 hover:text-ink',
+              )}
+            >
+              <span className="truncate">{entry.title}</span>
+              <span className="ml-3 shrink-0 text-[10px] text-muted">{entry.label}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="flex items-center justify-between border-t border-panel-border px-3 py-2 text-[10px] text-muted">
+          <span>↵ to jump</span>
+          <span>ESC to close</span>
+        </div>
+      </div>
     </div>
   )
 }
 
-function TocSidebar({ entries, activeId }: { entries: DocEntry[]; activeId: string | null }) {
-  if (entries.length === 0) return null
+function TocSidebar({ entries, activeId, open }: { entries: DocEntry[]; activeId: string | null; open: boolean }) {
   return (
-    <nav className="hidden md:block">
-      <div className="sticky top-8 space-y-0.5">
+    <aside
+      className={clsx(
+        'shrink-0 overflow-hidden transition-[width,opacity] duration-300 ease-out',
+        open ? 'w-full opacity-100 md:w-[180px]' : 'w-0 opacity-0',
+      )}
+    >
+      <nav className="sticky top-8 w-full space-y-0.5 md:w-[180px]">
         {entries.map((entry) => {
           const id = slugify(entry.label)
           return (
@@ -177,7 +272,7 @@ function TocSidebar({ entries, activeId }: { entries: DocEntry[]; activeId: stri
               key={id}
               href={`#${id}`}
               className={clsx(
-                'block rounded-lg px-3 py-1.5 text-xs leading-snug transition-colors',
+                'block rounded-lg px-3 py-1.5 text-xs leading-snug whitespace-nowrap transition-colors',
                 activeId === id ? 'bg-accent-soft font-medium text-accent' : 'text-muted hover:text-ink',
               )}
             >
@@ -185,15 +280,16 @@ function TocSidebar({ entries, activeId }: { entries: DocEntry[]; activeId: stri
             </a>
           )
         })}
-      </div>
-    </nav>
+        {entries.length === 0 && <p className="px-3 text-xs text-muted">No matches</p>}
+      </nav>
+    </aside>
   )
 }
 
 function ChangelogEntry({ entry }: { entry: DocEntry }) {
   return (
-    <div id={slugify(entry.label)} data-doc-section className="relative flex scroll-mt-8 flex-col gap-3 md:flex-row md:gap-16">
-      <div className="top-8 flex h-min w-40 shrink-0 items-center md:sticky">
+    <div id={slugify(entry.label)} data-doc-section className="relative flex scroll-mt-24 flex-col gap-3 md:flex-row md:gap-16">
+      <div className="top-24 flex h-min w-40 shrink-0 items-center md:sticky">
         <span className="glass-inset rounded-full px-3 py-1 text-[11px] font-medium tracking-wide text-muted">
           {entry.label}
         </span>
@@ -220,13 +316,8 @@ function DocsContent() {
     const saved = localStorage.getItem(THEME_STORAGE_KEY)
     return saved === 'flat' ? 'flat' : 'liquid'
   })
-  const [query, setQuery] = useState('')
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 768)
   const [activeId, setActiveId] = useState<string | null>(null)
-
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    return ENTRIES.filter((e) => matchesQuery(e, q))
-  }, [query])
 
   useEffect(() => {
     const sections = Array.from(document.querySelectorAll('[data-doc-section]'))
@@ -240,38 +331,47 @@ function DocsContent() {
     )
     sections.forEach((s) => observer.observe(s))
     return () => observer.disconnect()
-  }, [filtered])
+  }, [])
+
+  function jumpTo(slug: string) {
+    setActiveId(slug)
+    document.getElementById(slug)?.scrollIntoView({ block: 'start' })
+  }
 
   return (
-    <div data-theme={theme} className="min-h-screen px-6 py-8 text-ink">
+    <div data-theme={theme} className="min-h-screen text-ink">
       <SmoothScroll />
-      <div className="mx-auto max-w-5xl">
-        <header className="mb-6 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="bg-gradient-to-br from-white to-white/60 bg-clip-text text-xl font-semibold tracking-tight text-transparent">
-              Logo Animator — Docs
-            </h1>
-            <p className="text-sm text-muted">How to use it, from a first upload to advanced setting combos.</p>
-          </div>
+
+      <header className="glass sticky top-0 z-30 flex items-center gap-4 rounded-none border-x-0 border-t-0 px-6 py-3.5">
+        <button
+          type="button"
+          onClick={() => setSidebarOpen((v) => !v)}
+          title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+          aria-label="Toggle sidebar"
+          className="liquid-btn flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ink"
+        >
+          {HAMBURGER_ICON}
+        </button>
+        <span className="shrink-0 text-sm font-semibold tracking-tight text-ink">Logo Animator Docs</span>
+
+        <div className="ml-auto flex items-center gap-3">
+          <NavSearchBar onJump={jumpTo} />
           <a href="/" className="liquid-btn liquid-btn-accent shrink-0 rounded-full px-4 py-2 text-sm font-semibold text-white">
             Open the app
           </a>
-        </header>
-
-        <div className="mb-8 max-w-md">
-          <SearchBar value={query} onChange={setQuery} />
         </div>
+      </header>
 
-        <div className="grid grid-cols-1 gap-x-10 gap-y-10 md:grid-cols-[180px_1fr]">
-          <TocSidebar entries={filtered} activeId={activeId} />
+      <div className="mx-auto max-w-5xl px-6 py-8">
+        <p className="mb-8 text-sm text-muted">How to use it, from a first upload to advanced setting combos.</p>
 
-          <div className="space-y-10">
-            {filtered.map((entry) => (
+        <div className="flex flex-col gap-x-10 gap-y-10 md:flex-row">
+          <TocSidebar entries={ENTRIES} activeId={activeId} open={sidebarOpen} />
+
+          <div className="min-w-0 flex-1 space-y-10">
+            {ENTRIES.map((entry) => (
               <ChangelogEntry key={entry.label} entry={entry} />
             ))}
-            {filtered.length === 0 && (
-              <p className="text-sm text-muted">No sections match &ldquo;{query}&rdquo;.</p>
-            )}
           </div>
         </div>
       </div>
