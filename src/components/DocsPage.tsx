@@ -224,7 +224,7 @@ function NavSearchBar({ onJump }: { onJump: (slug: string) => void }) {
 
       <div
         className={clsx(
-          'glass absolute left-0 right-0 top-[calc(100%+8px)] z-20 origin-top overflow-hidden rounded-xl transition-all duration-200',
+          'absolute left-0 right-0 top-[calc(100%+8px)] z-20 origin-top overflow-hidden rounded-xl border border-panel-border bg-canvas shadow-2xl transition-all duration-200',
           open ? 'max-h-80 scale-100 opacity-100' : 'pointer-events-none max-h-0 scale-95 opacity-0',
         )}
       >
@@ -253,36 +253,6 @@ function NavSearchBar({ onJump }: { onJump: (slug: string) => void }) {
         </div>
       </div>
     </div>
-  )
-}
-
-function TocSidebar({ entries, activeId, open }: { entries: DocEntry[]; activeId: string | null; open: boolean }) {
-  return (
-    <aside
-      className={clsx(
-        'shrink-0 overflow-hidden transition-[width,opacity] duration-300 ease-out',
-        open ? 'w-full opacity-100 md:w-[180px]' : 'w-0 opacity-0',
-      )}
-    >
-      <nav className="sticky top-8 w-full space-y-0.5 md:w-[180px]">
-        {entries.map((entry) => {
-          const id = slugify(entry.label)
-          return (
-            <a
-              key={id}
-              href={`#${id}`}
-              className={clsx(
-                'block rounded-lg px-3 py-1.5 text-xs leading-snug whitespace-nowrap transition-colors',
-                activeId === id ? 'bg-accent-soft font-medium text-accent' : 'text-muted hover:text-ink',
-              )}
-            >
-              {entry.title}
-            </a>
-          )
-        })}
-        {entries.length === 0 && <p className="px-3 text-xs text-muted">No matches</p>}
-      </nav>
-    </aside>
   )
 }
 
@@ -316,25 +286,7 @@ function DocsContent() {
     const saved = localStorage.getItem(THEME_STORAGE_KEY)
     return saved === 'flat' ? 'flat' : 'liquid'
   })
-  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 768)
-  const [activeId, setActiveId] = useState<string | null>(null)
-
-  useEffect(() => {
-    const sections = Array.from(document.querySelectorAll('[data-doc-section]'))
-    if (sections.length === 0) return
-    const observer = new IntersectionObserver(
-      (observed) => {
-        const visible = observed.filter((o) => o.isIntersecting)
-        if (visible.length > 0) setActiveId(visible[0].target.id)
-      },
-      { rootMargin: '-15% 0px -70% 0px' },
-    )
-    sections.forEach((s) => observer.observe(s))
-    return () => observer.disconnect()
-  }, [])
-
   function jumpTo(slug: string) {
-    setActiveId(slug)
     document.getElementById(slug)?.scrollIntoView({ block: 'start' })
   }
 
@@ -345,10 +297,9 @@ function DocsContent() {
       <header className="glass sticky top-0 z-30 flex items-center gap-4 rounded-none border-x-0 border-t-0 px-6 py-3.5">
         <button
           type="button"
-          onClick={() => setSidebarOpen((v) => !v)}
-          title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-          aria-label="Toggle sidebar"
-          className="liquid-btn flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ink"
+          aria-hidden
+          tabIndex={-1}
+          className="liquid-btn liquid-btn-accent flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white"
         >
           {HAMBURGER_ICON}
         </button>
@@ -362,17 +313,16 @@ function DocsContent() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-5xl px-6 py-8">
-        <p className="mb-8 text-sm text-muted">How to use it, from a first upload to advanced setting combos.</p>
+      <div className="mx-auto max-w-3xl px-6 py-8">
+        <h1 className="mb-2 bg-gradient-to-br from-white to-white/60 bg-clip-text text-2xl font-semibold tracking-tight text-transparent">
+          Logo Animator — Docs
+        </h1>
+        <p className="mb-10 text-sm text-muted">How to use it, from a first upload to advanced setting combos.</p>
 
-        <div className="flex flex-col gap-x-10 gap-y-10 md:flex-row">
-          <TocSidebar entries={ENTRIES} activeId={activeId} open={sidebarOpen} />
-
-          <div className="min-w-0 flex-1 space-y-10">
-            {ENTRIES.map((entry) => (
-              <ChangelogEntry key={entry.label} entry={entry} />
-            ))}
-          </div>
+        <div className="space-y-10">
+          {ENTRIES.map((entry) => (
+            <ChangelogEntry key={entry.label} entry={entry} />
+          ))}
         </div>
       </div>
     </div>
