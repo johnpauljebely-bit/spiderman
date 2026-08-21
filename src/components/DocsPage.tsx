@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import clsx from 'clsx'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { LoadingGate } from './LoadingGate'
 import { SmoothScroll } from './SmoothScroll'
 import { THEME_STORAGE_KEY, type Theme } from '../lib/theme'
@@ -102,9 +103,96 @@ const ENTRIES: DocEntry[] = [
   },
 ]
 
+function slugify(label: string): string {
+  return label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
+
+function matchesQuery(entry: DocEntry, query: string): boolean {
+  if (!query) return true
+  const haystack = [entry.label, entry.title, entry.description, ...(entry.items ?? [])].join(' ').toLowerCase()
+  return haystack.includes(query)
+}
+
+const SEARCH_ICON = (
+  <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-muted" fill="none" aria-hidden>
+    <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth={2} />
+    <path d="M21 21l-4.3-4.3" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+  </svg>
+)
+
+function SearchBar({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      const isShortcut = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'
+      const isSlash = e.key === '/' && document.activeElement !== inputRef.current
+      if (isShortcut || isSlash) {
+        e.preventDefault()
+        inputRef.current?.focus()
+      }
+      if (e.key === 'Escape' && document.activeElement === inputRef.current) {
+        onChange('')
+        inputRef.current?.blur()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [onChange])
+
+  return (
+    <div className="glass-inset flex items-center gap-2.5 rounded-full px-4 py-2.5">
+      {SEARCH_ICON}
+      <input
+        ref={inputRef}
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Search docs…"
+        className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-muted"
+      />
+      {value ? (
+        <button type="button" onClick={() => onChange('')} className="shrink-0 text-xs text-muted hover:text-accent">
+          Clear
+        </button>
+      ) : (
+        <kbd className="shrink-0 rounded border border-panel-border px-1.5 py-0.5 text-[10px] text-muted">/</kbd>
+      )}
+    </div>
+  )
+}
+
+function TocSidebar({ entries, activeId }: { entries: DocEntry[]; activeId: string | null }) {
+  if (entries.length === 0) return null
+  return (
+    <nav className="hidden md:block">
+      <div className="sticky top-8 space-y-0.5">
+        {entries.map((entry) => {
+          const id = slugify(entry.label)
+          return (
+            <a
+              key={id}
+              href={`#${id}`}
+              className={clsx(
+                'block rounded-lg px-3 py-1.5 text-xs leading-snug transition-colors',
+                activeId === id ? 'bg-accent-soft font-medium text-accent' : 'text-muted hover:text-ink',
+              )}
+            >
+              {entry.title}
+            </a>
+          )
+        })}
+      </div>
+    </nav>
+  )
+}
+
 function ChangelogEntry({ entry }: { entry: DocEntry }) {
   return (
-    <div className="relative flex flex-col gap-3 md:flex-row md:gap-16">
+    <div id={slugify(entry.label)} data-doc-section className="relative flex scroll-mt-8 flex-col gap-3 md:flex-row md:gap-16">
       <div className="top-8 flex h-min w-40 shrink-0 items-center md:sticky">
         <span className="glass-inset rounded-full px-3 py-1 text-[11px] font-medium tracking-wide text-muted">
           {entry.label}
@@ -132,11 +220,32 @@ function DocsContent() {
     const saved = localStorage.getItem(THEME_STORAGE_KEY)
     return saved === 'flat' ? 'flat' : 'liquid'
   })
+  const [query, setQuery] = useState('')
+  const [activeId, setActiveId] = useState<string | null>(null)
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return ENTRIES.filter((e) => matchesQuery(e, q))
+  }, [query])
+
+  useEffect(() => {
+    const sections = Array.from(document.querySelectorAll('[data-doc-section]'))
+    if (sections.length === 0) return
+    const observer = new IntersectionObserver(
+      (observed) => {
+        const visible = observed.filter((o) => o.isIntersecting)
+        if (visible.length > 0) setActiveId(visible[0].target.id)
+      },
+      { rootMargin: '-15% 0px -70% 0px' },
+    )
+    sections.forEach((s) => observer.observe(s))
+    return () => observer.disconnect()
+  }, [filtered])
 
   return (
     <div data-theme={theme} className="min-h-screen px-6 py-8 text-ink">
       <SmoothScroll />
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-5xl">
         <header className="mb-6 flex items-start justify-between gap-4">
           <div>
             <h1 className="bg-gradient-to-br from-white to-white/60 bg-clip-text text-xl font-semibold tracking-tight text-transparent">
@@ -149,10 +258,21 @@ function DocsContent() {
           </a>
         </header>
 
-        <div className="mt-10 space-y-10">
-          {ENTRIES.map((entry) => (
-            <ChangelogEntry key={entry.label} entry={entry} />
-          ))}
+        <div className="mb-8 max-w-md">
+          <SearchBar value={query} onChange={setQuery} />
+        </div>
+
+        <div className="grid grid-cols-1 gap-x-10 gap-y-10 md:grid-cols-[180px_1fr]">
+          <TocSidebar entries={filtered} activeId={activeId} />
+
+          <div className="space-y-10">
+            {filtered.map((entry) => (
+              <ChangelogEntry key={entry.label} entry={entry} />
+            ))}
+            {filtered.length === 0 && (
+              <p className="text-sm text-muted">No sections match &ldquo;{query}&rdquo;.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
