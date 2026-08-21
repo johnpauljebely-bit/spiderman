@@ -1,7 +1,7 @@
 import type { AnimSettings } from '../types'
 import { DEFAULT_SETTINGS } from '../lib/defaults'
 import { EASING_OPTIONS } from '../lib/easing'
-import { Badge, FieldRow, Panel, Section, SegmentedControl, Select, SliderRow } from './ui'
+import { Badge, FieldRow, Panel, Section, SegmentedControl, Select, SliderRow, Switch } from './ui'
 
 const FINE_TUNE_KEYS = [
   'startHoldMs',
@@ -280,19 +280,27 @@ export function SettingsPanel({
         subtitle="Dissolve at the end of each loop instead of a hard cut"
         badge={settings.fadeOutMs > 0 ? <Badge tone="accent">on</Badge> : undefined}
       >
-        <SliderRow
-          label="Fade out at loop end"
-          hint="Dissolves the finished logo away at the end of each loop instead of hard-cutting back to blank. 0 = hard cut."
-          value={settings.fadeOutMs}
-          min={0}
-          max={3000}
-          step={50}
-          onChange={(v) => onChange({ fadeOutMs: v, fadeOverlapMs: Math.min(settings.fadeOverlapMs, v) })}
-          formatValue={(v) => (v === 0 ? 'off' : `${v}ms`)}
-        />
+        <div className="glass-inset mb-3 flex items-center justify-between rounded-lg px-3 py-2">
+          <Switch
+            checked={settings.fadeOutMs > 0}
+            onChange={(checked) => onChange({ fadeOutMs: checked ? 600 : 0 })}
+            label="Fade out at loop end"
+            hint="— dissolves the finished logo away instead of hard-cutting back to blank"
+          />
+        </div>
 
         {settings.fadeOutMs > 0 && (
           <>
+            <SliderRow
+              label="Fade duration"
+              hint="How long the dissolve takes."
+              value={settings.fadeOutMs}
+              min={50}
+              max={3000}
+              step={50}
+              onChange={(v) => onChange({ fadeOutMs: v, fadeOverlapMs: Math.min(settings.fadeOverlapMs, v) })}
+              formatValue={(v) => `${v}ms`}
+            />
             <SliderRow
               label="Overlap with next reveal"
               hint="How early the next loop's reveal starts, before this fade-out finishes — higher overlaps the two more."

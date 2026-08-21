@@ -28,14 +28,19 @@ export function AuthGate({ children }: { children: (user: DiscordUser, logout: (
   useEffect(() => {
     if (initedRef.current) return
     initedRef.current = true
-    let cancelled = false
 
+    // No cancellation guard here on purpose: `initedRef` above already keeps this from running
+    // twice under StrictMode's dev-only double-invoke, and AuthGate lives for the app's whole
+    // lifetime otherwise, so there's no real unmount case to guard against. An earlier version
+    // returned a cleanup that flipped a `cancelled` flag — but StrictMode calls that cleanup
+    // immediately on the throwaway first invocation, which then poisoned the *same* in-flight
+    // fetch that invocation had started, so the real Discord-redirect login never got out of
+    // 'checking' in dev.
     async function init() {
       const freshToken = consumeTokenFromRedirect()
       if (freshToken) {
         try {
           const user = await fetchDiscordUser(freshToken)
-          if (cancelled) return
           if (isAllowed(user)) {
             saveSession(user)
             setState({ status: 'authorized', user })
@@ -43,7 +48,7 @@ export function AuthGate({ children }: { children: (user: DiscordUser, logout: (
             setState({ status: 'denied', user })
           }
         } catch (err) {
-          if (!cancelled) setState({ status: 'login', error: err instanceof Error ? err.message : 'Login failed — try again.' })
+          setState({ status: 'login', error: err instanceof Error ? err.message : 'Login failed — try again.' })
         }
         return
       }
@@ -64,9 +69,6 @@ export function AuthGate({ children }: { children: (user: DiscordUser, logout: (
     }
 
     init()
-    return () => {
-      cancelled = true
-    }
   }, [])
 
   function logout() {

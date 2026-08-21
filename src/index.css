@@ -56,6 +56,59 @@ body {
     0 24px 48px -28px #000000d9;
 }
 
+/* ---- Gooey loader (GooeyLoader.tsx) ---- */
+
+.gooey-loader {
+  width: 12em;
+  height: 3em;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid var(--gooey-border);
+}
+
+.gooey-loader::before,
+.gooey-loader::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+}
+
+.gooey-loader::before {
+  width: 22em;
+  height: 18em;
+  background-color: var(--gooey-primary);
+  left: -2em;
+  bottom: -18em;
+  animation: gooey-loader-wee1 2s linear infinite;
+}
+
+.gooey-loader::after {
+  width: 16em;
+  height: 12em;
+  background-color: var(--gooey-secondary);
+  left: -4em;
+  bottom: -12em;
+  animation: gooey-loader-wee2 2s linear infinite 0.75s;
+}
+
+@keyframes gooey-loader-wee1 {
+  0% {
+    transform: translateX(-10em) rotate(0deg);
+  }
+  100% {
+    transform: translateX(7em) rotate(180deg);
+  }
+}
+
+@keyframes gooey-loader-wee2 {
+  0% {
+    transform: translateX(-8em) rotate(0deg);
+  }
+  100% {
+    transform: translateX(8em) rotate(180deg);
+  }
+}
+
 .glass-inset {
   background: linear-gradient(165deg, #00000042, #00000024 60%);
   border: 1px solid #ffffff1e;

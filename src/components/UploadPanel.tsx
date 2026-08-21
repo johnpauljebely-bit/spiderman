@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { GooeyLoader } from './GooeyLoader'
 import { Panel, SliderRow } from './ui'
 
 export function UploadPanel({
@@ -53,10 +54,15 @@ export function UploadPanel({
 
       {error && <p className="mb-3 text-xs text-red-400">{error}</p>}
 
-      {fileName && (
-        <p className="mb-3 text-xs text-muted">
-          {loading ? 'Tracing…' : `${elementCount} element${elementCount === 1 ? '' : 's'} detected`}
-        </p>
+      {fileName && loading && (
+        <div className="mb-3 flex items-center gap-2">
+          <GooeyLoader className="h-4 text-[3px]" />
+          <p className="text-xs text-muted">Tracing…</p>
+        </div>
+      )}
+
+      {fileName && !loading && (
+        <p className="mb-3 text-xs text-muted">{`${elementCount} element${elementCount === 1 ? '' : 's'} detected`}</p>
       )}
 
       {isRaster && (

@@ -14,13 +14,27 @@ import { imageToImageData, loadImageFromFile, parseSvgText, vectorizeImageData, 
 import type { AnimSettings, BackgroundSettings, PickMode, SequenceGroup } from './types'
 import { Switch } from './components/ui'
 import { AuthGate } from './components/AuthGate'
+import { LoadingGate } from './components/LoadingGate'
 import type { DiscordUser } from './lib/discordAuth'
+import { DOCS_URL } from './lib/docsUrl'
 
 type Theme = 'liquid' | 'flat'
 const THEME_STORAGE_KEY = 'logo-animator-theme'
 
+/** An open-book glyph for the header's Docs button — reads as "guide" without being a literal screenshot of one. */
+const DOCS_MARK = (
+  <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="currentColor" aria-hidden>
+    <path d="M11.25 4.4c-1.9-1.35-4.3-2-6.9-2-.75 0-1.35.6-1.35 1.35v13.4c0 .75.6 1.3 1.35 1.25 2.35-.2 4.5.3 6.4 1.5.16.1.33.15.5.15V4.4Z" />
+    <path d="M12.75 4.4c1.9-1.35 4.3-2 6.9-2 .75 0 1.35.6 1.35 1.35v13.4c0 .75-.6 1.3-1.35 1.25-2.35-.2-4.5.3-6.4 1.5-.16.1-.33.15-.5.15V4.4Z" />
+  </svg>
+)
+
 export default function App() {
-  return <AuthGate>{(user, logout) => <AppContent user={user} onLogout={logout} />}</AuthGate>
+  return (
+    <LoadingGate>
+      <AuthGate>{(user, logout) => <AppContent user={user} onLogout={logout} />}</AuthGate>
+    </LoadingGate>
+  )
 }
 
 function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => void }) {
@@ -176,6 +190,16 @@ function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => voi
             <p className="text-sm text-muted">Trace a logo, tune the reveal, export a looping GIF.</p>
           </div>
           <div className="flex shrink-0 items-center gap-3">
+            <a
+              href={DOCS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Docs"
+              aria-label="Docs"
+              className="liquid-btn liquid-btn-accent flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white"
+            >
+              {DOCS_MARK}
+            </a>
             <div
               className="glass flex shrink-0 items-center gap-2.5 whitespace-nowrap rounded-full px-3.5 py-2"
               title="Switch between the liquid-glass look and the plain flat-blue look."

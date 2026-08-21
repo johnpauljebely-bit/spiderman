@@ -17,6 +17,17 @@ const PICK_MODE_HINTS: Record<PickMode, string> = {
   end: "Click a shape to drop an amber end marker — optional; without one the outline just draws the full loop back to its start.",
 }
 
+const GRIP_ICON = (
+  <svg viewBox="0 0 10 16" className="h-3.5 w-2.5 shrink-0 text-zinc-600" fill="currentColor" aria-hidden>
+    <circle cx="2.5" cy="2.5" r="1.3" />
+    <circle cx="7.5" cy="2.5" r="1.3" />
+    <circle cx="2.5" cy="8" r="1.3" />
+    <circle cx="7.5" cy="8" r="1.3" />
+    <circle cx="2.5" cy="13.5" r="1.3" />
+    <circle cx="7.5" cy="13.5" r="1.3" />
+  </svg>
+)
+
 /**
  * A number input needs a local text buffer, not a direct `value={numberState}` binding — while typing
  * "-150" the field passes through intermediate states like "-" that aren't valid numbers yet. Coercing
@@ -171,6 +182,19 @@ function ManualGrouping({
   const resolved = resolveGroups(groups, paths)
   const firstResolvedId = resolved[0]?.id
 
+  const [dragIndex, setDragIndex] = useState<number | null>(null)
+  const [overIndex, setOverIndex] = useState<number | null>(null)
+
+  function reorderGroups(fromIndex: number, toIndex: number) {
+    if (fromIndex === toIndex) return
+    onGroupsChange((prev) => {
+      const next = [...prev]
+      const [moved] = next.splice(fromIndex, 1)
+      next.splice(toIndex, 0, moved)
+      return next
+    })
+  }
+
   function addGroup() {
     const id = `group-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
     onGroupsChange((prev) => [...prev, { id, pathIds: [], gapMs: 0 }])
@@ -181,17 +205,6 @@ function ManualGrouping({
   function removeGroup(id: string) {
     onGroupsChange((prev) => prev.filter((g) => g.id !== id))
     if (activeGroupId === id) onActiveGroupChange(null)
-  }
-
-  function moveGroup(id: string, dir: -1 | 1) {
-    onGroupsChange((prev) => {
-      const i = prev.findIndex((g) => g.id === id)
-      const j = i + dir
-      if (i < 0 || j < 0 || j >= prev.length) return prev
-      const next = [...prev]
-      ;[next[i], next[j]] = [next[j], next[i]]
-      return next
-    })
   }
 
   function updateGap(id: string, gapMs: number) {
@@ -224,51 +237,48 @@ function ManualGrouping({
           return (
             <div
               key={group.id}
+              draggable
+              onDragStart={(e) => {
+                setDragIndex(i)
+                e.dataTransfer.effectAllowed = 'move'
+              }}
+              onDragOver={(e) => {
+                e.preventDefault()
+                if (dragIndex !== null && dragIndex !== i) setOverIndex(i)
+              }}
+              onDragLeave={() => setOverIndex((cur) => (cur === i ? null : cur))}
+              onDrop={(e) => {
+                e.preventDefault()
+                if (dragIndex !== null) reorderGroups(dragIndex, i)
+                setDragIndex(null)
+                setOverIndex(null)
+              }}
+              onDragEnd={() => {
+                setDragIndex(null)
+                setOverIndex(null)
+              }}
               onClick={() => {
                 onActiveGroupChange(group.id)
                 onPickModeChange('assign')
               }}
-              className={`flex cursor-pointer flex-col gap-1 rounded-md border px-2 py-1.5 transition-colors ${
+              className={`flex cursor-grab flex-col gap-1 rounded-md border px-2 py-1.5 transition-colors active:cursor-grabbing ${
                 isActive ? 'border-accent bg-accent-soft' : 'glass-inset border-panel-border hover:border-zinc-500'
-              }`}
+              } ${overIndex === i ? 'border-accent' : ''} ${dragIndex === i ? 'opacity-40' : ''}`}
             >
               <div className="flex items-center gap-2">
+                {GRIP_ICON}
                 <span className="text-[10px] text-muted">Group {i + 1}</span>
                 <Swatches paths={members} />
-                <div className="ml-auto flex items-center gap-0.5">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      moveGroup(group.id, -1)
-                    }}
-                    disabled={i === 0}
-                    className="px-1 text-zinc-500 hover:text-accent disabled:pointer-events-none disabled:opacity-20"
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      moveGroup(group.id, 1)
-                    }}
-                    disabled={i === groups.length - 1}
-                    className="px-1 text-zinc-500 hover:text-accent disabled:pointer-events-none disabled:opacity-20"
-                  >
-                    ↓
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      removeGroup(group.id)
-                    }}
-                    className="px-1 text-zinc-500 hover:text-red-400"
-                  >
-                    ✕
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    removeGroup(group.id)
+                  }}
+                  className="ml-auto px-1 text-zinc-500 hover:text-red-400"
+                >
+                  ✕
+                </button>
               </div>
 
               {!gapIgnored && (
@@ -298,7 +308,8 @@ function ManualGrouping({
         )}
       </div>
       <p className="text-[11px] leading-snug text-muted">
-        A negative gap makes a group start before the previous one finishes, overlapping it.
+        Drag a group by its handle to reorder what plays first. A negative gap makes a group start before the
+        previous one finishes, overlapping it.
       </p>
     </>
   )
