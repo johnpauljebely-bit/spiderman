@@ -15,6 +15,7 @@ import type { AnimSettings, BackgroundSettings, PickMode, SequenceGroup } from '
 import { Switch } from './components/ui'
 import { AuthGate } from './components/AuthGate'
 import { LoadingGate } from './components/LoadingGate'
+import { SmoothScroll } from './components/SmoothScroll'
 import type { DiscordUser } from './lib/discordAuth'
 import { DOCS_URL } from './lib/docsUrl'
 
@@ -181,6 +182,7 @@ function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => voi
 
   return (
     <div data-theme={theme} className="min-h-screen px-6 py-8 text-ink">
+      <SmoothScroll />
       <div className="mx-auto max-w-6xl">
         <header className="mb-6 flex items-start justify-between gap-4">
           <div>

@@ -18,6 +18,14 @@ body {
   color: var(--color-ink);
 }
 
+/* Lenis's own documented override — without it, the fixed height above clamps scrollable content
+   to exactly the viewport once Lenis takes over wheel/touch input, silently killing scroll on any
+   view taller than one screen. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
 body {
   /* A real glass surface reflects what's behind it, not a rainbow — keep this to one faint,
      colorless sheen (a touch of cool white light from the top) instead of tinted color blobs. */
