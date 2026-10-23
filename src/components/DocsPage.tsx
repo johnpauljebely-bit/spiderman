@@ -43,8 +43,21 @@ const ENTRIES: DocEntry[] = [
       'Three options: Solid color, Image (upload a background photo or graphic), or Transparent, which exports a real transparent GIF — no background baked in at all. Use Transparent for a video editor, a slide deck, or anywhere with its own background already.',
   },
   {
+    label: 'Simple mode',
+    title: 'Simple mode — the easy way to a good logo',
+    description:
+      'The Animation panel starts in Simple mode, which trims everything down to the choices that matter most. Flip the Simple mode switch at the top of the panel to get every control back (your choice is remembered).',
+    items: [
+      'Pick a look — Clean, Hand-drawn, Snappy, Cinematic or Glass fill. Each one sets all the fiddly timing and styling for you.',
+      'Speed — slower looks more dramatic, faster feels snappier. Picking a look sets a sensible speed to start from.',
+      'Smooth loop — fades the logo out at the end instead of cutting straight back to blank.',
+      'Faint preview — shows the whole logo dimly before it draws in.',
+      'Want something more specific? Turn Simple mode off and tweak any look from there — the settings carry over.',
+    ],
+  },
+  {
     label: 'Animation',
-    title: 'The Animation panel',
+    title: 'The Animation panel (full controls)',
     items: [
       'Reveal style — Draw & Fill draws the outline on like a pen, then fades the color in behind it, the classic “logo animation” look. Fade Wipe sweeps the color in across each shape from one edge instead, like a blind opening.',
       'Speed scales the whole animation — higher is snappier, lower is slower and more dramatic. Everything in Timing is the exact-millisecond version of what Speed is roughly doing.',
@@ -73,7 +86,7 @@ const ENTRIES: DocEntry[] = [
     label: 'Presets',
     title: 'Presets worth starting from',
     items: [
-      'Clean & simple — Draw & Fill, Speed 70%, Stroke width 2px, Pen laps 1, Fill style Normal, Easing Ease Out.',
+      'Clean & simple — Draw & Fill, Speed 70%, Stroke width 2.5px, Pen laps 1, Fill style Normal, Easing Ease Out.',
       'Hand-drawn / sketchy — Draw & Fill, Speed 50%, Stroke width 3.5px, Pen laps 2-3, Outline draw ~1400ms, Easing Linear or Smooth.',
       'Snappy loop for social/chat — Draw & Fill, Speed 140%, Outline draw 400ms, Fill fade 200ms, Hold end 400ms, Loop fade on with Fade duration 200ms and Overlap 200ms (max).',
       'Cinematic reveal — Fade Wipe, Direction Diagonal ↗, Softness 40%, Reveal duration 1800ms, Hold at start 800ms, Hold at end 1400ms, Easing Ease In-Out.',
