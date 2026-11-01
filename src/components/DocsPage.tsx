@@ -311,8 +311,8 @@ function DocsContent() {
 
         <div className="ml-auto flex items-center gap-3">
           <NavSearchBar onJump={jumpTo} />
-          <nav className="nav-pill" aria-label="Main">
-            <a href="/" className="nav-link hidden sm:inline">
+          <nav className="app-nav-pill" aria-label="Main">
+            <a href="/" className="app-nav-link hidden sm:inline">
               Home
             </a>
             <a href="/app" className="btn btn-primary whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium">

@@ -3,6 +3,7 @@ import { HalftoneWordmark } from './halftone-wordmark';
 import { Intro } from './intro';
 import { Rise } from './rise';
 import { arrivedFromSite } from '../lib/arrival';
+import { SmoothScroll } from '../components/SmoothScroll';
 import './landing.css';
 
 const OPEN_APP = '/app';
@@ -58,6 +59,8 @@ export default function Landing() {
   return (
     <>
       {intro && <Intro onDone={() => setIntro(false)} />}
+      {/* Held back until the intro is done, so scrolling can't move the page hiding behind it. */}
+      {!intro && <SmoothScroll />}
       <div className="page" data-shown={!intro || undefined}>
         <Banner />
         <Header />

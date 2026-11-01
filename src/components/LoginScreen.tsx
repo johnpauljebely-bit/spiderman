@@ -116,7 +116,7 @@ export function LoginScreen({ error }: { error: string | null }) {
           />
         </div>
 
-        <a href="/" className="enter nav-link absolute start-5 top-7 z-10 flex items-center gap-1.5" style={enter(0, lifted)}>
+        <a href="/" className="enter app-nav-link absolute start-5 top-7 z-10 flex items-center gap-1.5" style={enter(0, lifted)}>
           <BackArrow className="size-4" />
           Home
         </a>

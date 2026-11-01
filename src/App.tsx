@@ -20,9 +20,12 @@ import type { DiscordUser } from './lib/discordAuth'
 /** The tool itself: sign in with Discord, then trace, animate and export. Routing lives in main.tsx. */
 export default function App() {
   return (
-    <LoadingGate>
-      <AuthGate>{(user, logout) => <AppContent user={user} onLogout={logout} />}</AuthGate>
-    </LoadingGate>
+    <>
+      <SmoothScroll />
+      <LoadingGate>
+        <AuthGate>{(user, logout) => <AppContent user={user} onLogout={logout} />}</AuthGate>
+      </LoadingGate>
+    </>
   )
 }
 
@@ -161,14 +164,13 @@ function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => voi
 
   return (
     <div className="min-h-screen px-6 pb-16 text-ink">
-      <SmoothScroll />
       <div className="mx-auto max-w-6xl">
         <header className="sticky top-0 z-40 -mx-6 flex items-center justify-between gap-4 bg-gradient-to-b from-white from-55% to-white/0 px-6 py-4">
           <a href="/" aria-label="Move home" className="grid h-10 w-10 place-items-center rounded-xl">
             <img src="/move-logo.svg" alt="" className="h-5 w-auto select-none invert" draggable={false} />
           </a>
-          <nav className="nav-pill" aria-label="Main">
-            <a href="/docs" target="_blank" rel="noopener" className="nav-link">
+          <nav className="app-nav-pill" aria-label="Main">
+            <a href="/docs" target="_blank" rel="noopener" className="app-nav-link">
               Docs
             </a>
             <span className="flex items-center gap-2 px-2.5">

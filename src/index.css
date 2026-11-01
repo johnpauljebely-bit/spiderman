@@ -35,6 +35,12 @@ html.lenis body {
   height: auto;
 }
 
+/* Lenis scrolls a little every frame; a CSS scroll-behavior: smooth (the landing page has one for anchor
+   links) would animate each of those steps and make it lag. */
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
 #root {
   min-height: 100%;
 }
@@ -103,8 +109,9 @@ summary:focus-visible {
   cursor: not-allowed;
 }
 
-/* The pill that holds the page's links in the top bar (grey, with a white chip on the current page). */
-.nav-pill {
+/* The pill that holds the page's links in the top bar (grey, with a white chip on the current page).
+   Named app-* because the landing page has its own .nav-pill / .nav-link with different colours. */
+.app-nav-pill {
   display: flex;
   align-items: center;
   gap: 2px;
@@ -114,7 +121,7 @@ summary:focus-visible {
   backdrop-filter: blur(14px) saturate(1.4);
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
 }
-.nav-link {
+.app-nav-link {
   padding: 8px 14px;
   border-radius: 999px;
   font-size: 14px;
@@ -124,10 +131,10 @@ summary:focus-visible {
     color 0.2s ease,
     background-color 0.2s ease;
 }
-.nav-link:hover {
+.app-nav-link:hover {
   color: var(--color-ink);
 }
-.nav-link[aria-current='page'] {
+.app-nav-link[aria-current='page'] {
   color: var(--color-ink);
   background: #fff;
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
