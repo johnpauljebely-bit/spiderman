@@ -282,6 +282,36 @@ export function loadImageFromFile(file: File): Promise<HTMLImageElement> {
   })
 }
 
+// Alpha below this is background haze (compression noise, faint glow); above SOLID_ALPHA is the logo's body.
+const CLEAR_ALPHA = 32
+const SOLID_ALPHA = 200
+
+/**
+ * Snaps a logo's alpha channel to what it almost certainly means: nothing, edge, or solid.
+ *
+ * imagetracerjs quantizes RGBA as four-dimensional colors, so a logo whose body sits at alpha 224–254
+ * (very common in exports — it reads as fully opaque to the eye) with a faint alpha haze around it gets
+ * split into several muddy semi-transparent clusters instead of one clean shape. That's what fused a
+ * circle to the stem next to it and left fragments and a wobbly outline in the traced result. Haze
+ * becomes truly transparent, near-opaque becomes opaque, and genuinely soft pixels (anti-aliased edges,
+ * deliberately translucent fills) are left alone so the boundary still lands where the edge really is.
+ */
+export function cleanAlpha(imageData: ImageData): ImageData {
+  const data = imageData.data
+  for (let i = 0; i < data.length; i += 4) {
+    const alpha = data[i + 3]
+    if (alpha < CLEAR_ALPHA) {
+      data[i] = 0
+      data[i + 1] = 0
+      data[i + 2] = 0
+      data[i + 3] = 0
+    } else if (alpha >= SOLID_ALPHA) {
+      data[i + 3] = 255
+    }
+  }
+  return imageData
+}
+
 /** Rasterizes an image element to ImageData, downscaling large images to keep tracing fast. */
 export function imageToImageData(img: HTMLImageElement, maxDimension = 640): { imageData: ImageData; width: number; height: number } {
   const naturalWidth = img.naturalWidth || img.width
@@ -297,6 +327,6 @@ export function imageToImageData(img: HTMLImageElement, maxDimension = 640): { i
   ctx.imageSmoothingEnabled = true
   ctx.imageSmoothingQuality = 'high'
   ctx.drawImage(img, 0, 0, width, height)
-  const imageData = ctx.getImageData(0, 0, width, height)
+  const imageData = cleanAlpha(ctx.getImageData(0, 0, width, height))
   return { imageData, width, height }
 }
