@@ -43,7 +43,7 @@ export function UploadPanel({
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="mb-3 w-full rounded-xl border border-dashed border-panel-border bg-black/15 py-6 text-center text-xs text-zinc-400 transition-colors hover:border-accent hover:text-zinc-200"
+        className="mb-3 w-full rounded-xl border border-dashed border-panel-border bg-panel-strong py-6 text-center text-xs text-muted transition-colors hover:border-ink hover:text-ink"
       >
         {fileName ? (
           <span className="font-medium text-ink">{fileName}</span>
@@ -52,7 +52,7 @@ export function UploadPanel({
         )}
       </button>
 
-      {error && <p className="mb-3 text-xs text-red-400">{error}</p>}
+      {error && <p className="mb-3 text-xs text-red-600">{error}</p>}
 
       {fileName && loading && (
         <div className="mb-3 flex items-center gap-2">

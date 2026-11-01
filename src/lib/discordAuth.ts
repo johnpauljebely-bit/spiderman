@@ -23,8 +23,10 @@ interface StoredSession {
   loginAt: number
 }
 
+// Always the site root, wherever the login button was clicked: Discord only accepts redirect addresses
+// that were registered for the app, and the root is the one that is. main.tsx forwards the token to /app.
 function redirectUri(): string {
-  return window.location.origin + window.location.pathname
+  return window.location.origin + '/'
 }
 
 export function getDiscordAuthorizeUrl(): string {

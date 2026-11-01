@@ -2,16 +2,16 @@ import { forwardRef, useId, type CSSProperties, type HTMLAttributes } from 'reac
 import clsx from 'clsx'
 
 export interface GooeyLoaderProps extends HTMLAttributes<HTMLDivElement> {
-  /** Defaults to the app's blue accent. */
+  /** Defaults to the app's ink color. */
   primaryColor?: string
   secondaryColor?: string
   borderColor?: string
 }
 
-/** Two blue blobs merging/splitting behind a gooey SVG filter, for any spinner-shaped wait. Size scales
+/** Two blobs merging/splitting behind a gooey SVG filter, for any spinner-shaped wait. Size scales
  * with font-size (it's all `em` under the hood) — drop a text size class on it to resize. */
 export const GooeyLoader = forwardRef<HTMLDivElement, GooeyLoaderProps>(
-  ({ className, primaryColor = 'var(--color-accent)', secondaryColor = '#8fc7ff', borderColor = 'var(--color-panel-border)', style, ...props }, ref) => {
+  ({ className, primaryColor = 'var(--color-accent)', secondaryColor = '#a1a1aa', borderColor = 'var(--color-panel-border)', style, ...props }, ref) => {
     const filterId = useId()
 
     return (

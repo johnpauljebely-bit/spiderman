@@ -18,7 +18,7 @@ const PICK_MODE_HINTS: Record<PickMode, string> = {
 }
 
 const GRIP_ICON = (
-  <svg viewBox="0 0 10 16" className="h-3.5 w-2.5 shrink-0 text-zinc-600" fill="currentColor" aria-hidden>
+  <svg viewBox="0 0 10 16" className="h-3.5 w-2.5 shrink-0 text-faint" fill="currentColor" aria-hidden>
     <circle cx="2.5" cy="2.5" r="1.3" />
     <circle cx="7.5" cy="2.5" r="1.3" />
     <circle cx="2.5" cy="8" r="1.3" />
@@ -59,7 +59,7 @@ function GapInput({ value, onChange }: { value: number; onChange: (value: number
       step={10}
       onChange={(e) => handleChange(e.target.value)}
       onBlur={handleBlur}
-      className="glass-inset w-16 rounded px-1 py-0.5 text-zinc-200 outline-none"
+      className="surface-inset w-16 rounded px-1 py-0.5 text-ink outline-none"
     />
   )
 }
@@ -103,7 +103,7 @@ export function SequenceEditor({
   const byId = new Map(paths.map((p) => [p.id, p]))
 
   const autoToggle = (
-    <div className="glass-inset flex items-center justify-between rounded-lg px-3 py-2">
+    <div className="surface-inset flex items-center justify-between rounded-lg px-3 py-2">
       <Switch checked={autoSequence} onChange={onAutoSequenceChange} label="Auto-sequence" hint="— orders shapes by size for a cascading reveal" />
     </div>
   )
@@ -114,7 +114,7 @@ export function SequenceEditor({
     <div className="space-y-2">
       <div className="flex flex-wrap items-center gap-2">
         {autoGroups.map((group, i) => (
-          <div key={group.id} className="glass-inset flex items-center gap-1.5 rounded-md px-2 py-1">
+          <div key={group.id} className="surface-inset flex items-center gap-1.5 rounded-md px-2 py-1">
             <span className="text-[10px] text-muted">Tier {i + 1}</span>
             <Swatches paths={group.pathIds.map((id) => byId.get(id)).filter((p): p is PreparedPath => !!p)} />
           </div>
@@ -139,14 +139,14 @@ export function SequenceEditor({
     <Panel title="Sequence" className="mt-3 space-y-3">
       {autoToggle}
       <div>
-        <div className="glass-inset flex rounded-lg p-1">
+        <div className="surface-inset flex rounded-full p-1">
           {pickModeOptions.map((opt) => (
             <button
               key={opt.value}
               type="button"
               onClick={() => onPickModeChange(pickMode === opt.value ? 'none' : opt.value)}
-              className={`flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors ${
-                pickMode === opt.value ? 'liquid-btn liquid-btn-accent text-white' : 'text-zinc-400 hover:text-zinc-200'
+              className={`flex-1 rounded-full px-2 py-1.5 text-xs font-medium transition-colors ${
+                pickMode === opt.value ? 'bg-white text-ink shadow-[0_1px_2px_rgb(0_0_0/0.06)]' : 'text-muted hover:text-ink'
               }`}
             >
               {opt.label}
@@ -223,7 +223,7 @@ function ManualGrouping({
         {/* Once you've started building real groups, the automatic "everything else" bucket is just
             clutter — hide it so the workspace shows only what you've deliberately organized. */}
         {ungroupedPaths.length > 0 && groups.length === 0 && (
-          <div className="glass-inset flex items-center gap-1.5 rounded-md px-2 py-1">
+          <div className="surface-inset flex items-center gap-1.5 rounded-md px-2 py-1">
             <span className="text-[10px] text-muted">Ungrouped · plays first</span>
             <Swatches paths={ungroupedPaths} />
           </div>
@@ -262,7 +262,7 @@ function ManualGrouping({
                 onPickModeChange('assign')
               }}
               className={`flex cursor-grab flex-col gap-1 rounded-md border px-2 py-1.5 transition-colors active:cursor-grabbing ${
-                isActive ? 'border-accent bg-accent-soft' : 'glass-inset border-panel-border hover:border-zinc-500'
+                isActive ? 'border-ink bg-white' : 'surface-inset hover:border-faint'
               } ${overIndex === i ? 'border-accent' : ''} ${dragIndex === i ? 'opacity-40' : ''}`}
             >
               <div className="flex items-center gap-2">
@@ -275,7 +275,7 @@ function ManualGrouping({
                     e.stopPropagation()
                     removeGroup(group.id)
                   }}
-                  className="ml-auto px-1 text-zinc-500 hover:text-red-400"
+                  className="ml-auto px-1 text-faint hover:text-red-600"
                 >
                   ✕
                 </button>
@@ -296,7 +296,7 @@ function ManualGrouping({
         <button
           type="button"
           onClick={addGroup}
-          className="rounded-md border border-dashed border-panel-border px-2 py-1.5 text-xs text-zinc-400 transition-colors hover:border-accent hover:text-accent"
+          className="rounded-md border border-dashed border-panel-border px-2 py-1.5 text-xs text-muted transition-colors hover:border-ink hover:text-ink"
         >
           + Add group
         </button>

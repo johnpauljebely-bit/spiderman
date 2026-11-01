@@ -3,7 +3,7 @@ import { useId, useState, type CSSProperties, type ReactNode } from 'react'
 
 export function Panel({ title, children, className }: { title?: string; children: ReactNode; className?: string }) {
   return (
-    <div className={clsx('glass rounded-2xl p-5', className)}>
+    <div className={clsx('surface rounded-[20px] p-5', className)}>
       {title && <h3 className="mb-3 text-sm font-semibold tracking-tight text-ink">{title}</h3>}
       {children}
     </div>
@@ -11,7 +11,7 @@ export function Panel({ title, children, className }: { title?: string; children
 }
 
 /**
- * A collapsible, glass-styled dropdown section — the building block for grouping settings into
+ * A collapsible dropdown section — the building block for grouping settings into
  * named, expandable groups instead of one long flat scroll. `badge` renders a small pill next to
  * the title (e.g. an on/off state or a count) so you can tell what's inside without opening it.
  */
@@ -34,14 +34,14 @@ export function Section({
   const contentId = useId()
 
   return (
-    <div className="glass-raised overflow-hidden rounded-xl border">
+    <div className="surface-raised overflow-hidden rounded-xl">
       <div className="flex items-center">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls={contentId}
-          className="flex flex-1 items-center gap-2.5 px-3.5 py-3 text-left transition-colors hover:bg-white/[0.03]"
+          className="flex flex-1 items-center gap-2.5 px-3.5 py-3 text-left transition-colors hover:bg-black/[0.02]"
         >
           <svg
             viewBox="0 0 20 20"
@@ -74,7 +74,7 @@ export function Badge({ children, tone = 'default' }: { children: ReactNode; ton
     <span
       className={clsx(
         'rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none',
-        tone === 'accent' ? 'bg-accent-soft text-accent' : 'bg-white/10 text-muted',
+        tone === 'accent' ? 'bg-accent text-white' : 'bg-panel-strong text-muted',
       )}
     >
       {children}
@@ -82,25 +82,25 @@ export function Badge({ children, tone = 'default' }: { children: ReactNode; ton
   )
 }
 
-/** A proper on/off switch — used for the header Godmode toggle, Auto-sequence, and similar booleans. */
+/** A proper on/off switch — used for Auto-sequence, Simple mode and similar booleans. */
 export function Switch({ checked, onChange, label, hint }: { checked: boolean; onChange: (value: boolean) => void; label: ReactNode; hint?: string }) {
   return (
     <label className="flex cursor-pointer items-center gap-2.5 select-none">
       <span
         className={clsx(
           'relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-150',
-          checked ? 'bg-accent' : 'bg-white/15',
+          checked ? 'bg-accent' : 'bg-[#d4d4d8]',
         )}
       >
         <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="peer absolute inset-0 m-0 cursor-pointer opacity-0" />
         <span
           className={clsx(
-            'inline-block h-3.5 w-3.5 transform rounded-full bg-black shadow transition-transform duration-150',
+            'inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform duration-150',
             checked ? 'translate-x-[18px]' : 'translate-x-[3px]',
           )}
         />
       </span>
-      <span className="text-xs text-zinc-200">
+      <span className="text-xs text-ink">
         {label}
         {hint && <span className="ml-1 text-muted">{hint}</span>}
       </span>
@@ -131,7 +131,7 @@ export function SliderRow({
   const fillPct = max > min ? ((value - min) / (max - min)) * 100 : 0
   return (
     <div className="mb-4 last:mb-0">
-      <div className="mb-1.5 flex items-center justify-between text-xs text-zinc-400">
+      <div className="mb-1.5 flex items-center justify-between text-xs text-muted">
         <span>{label}</span>
         <span className="font-medium text-ink">{formatValue ? formatValue(value) : value}</span>
       </div>
@@ -153,7 +153,7 @@ export function SliderRow({
 export function FieldRow({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
     <div className="mb-4 last:mb-0">
-      <div className="flex items-center justify-between text-xs text-zinc-400">
+      <div className="flex items-center justify-between text-xs text-muted">
         <span>{label}</span>
         {children}
       </div>
@@ -172,15 +172,15 @@ export function SegmentedControl<T extends string>({
   onChange: (value: T) => void
 }) {
   return (
-    <div className="glass-inset flex rounded-lg p-1">
+    <div className="surface-inset flex rounded-full p-1">
       {options.map((opt) => (
         <button
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
           className={clsx(
-            'flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
-            value === opt.value ? 'liquid-btn liquid-btn-accent text-white' : 'text-zinc-400 hover:text-zinc-200',
+            'flex-1 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
+            value === opt.value ? 'bg-white text-ink shadow-[0_1px_2px_rgb(0_0_0/0.06)]' : 'text-muted hover:text-ink',
           )}
         >
           {opt.label}
@@ -203,10 +203,10 @@ export function Select<T extends string>({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value as T)}
-      className="glass-inset rounded-md px-2 py-1 text-xs text-zinc-200 outline-none"
+      className="surface-inset rounded-md px-2 py-1 text-xs text-ink outline-none"
     >
       {options.map((opt) => (
-        <option key={opt.value} value={opt.value} className="bg-[#14171b] text-zinc-200">
+        <option key={opt.value} value={opt.value} className="bg-white text-ink">
           {opt.label}
         </option>
       ))}

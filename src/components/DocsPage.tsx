@@ -2,7 +2,6 @@ import clsx from 'clsx'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { LoadingGate } from './LoadingGate'
 import { SmoothScroll } from './SmoothScroll'
-import { THEME_STORAGE_KEY, type Theme } from '../lib/theme'
 
 type DocEntry = {
   label: string
@@ -61,7 +60,7 @@ const ENTRIES: DocEntry[] = [
     items: [
       'Reveal style — Draw & Fill draws the outline on like a pen, then fades the color in behind it, the classic “logo animation” look. Fade Wipe sweeps the color in across each shape from one edge instead, like a blind opening.',
       'Speed scales the whole animation — higher is snappier, lower is slower and more dramatic. Everything in Timing is the exact-millisecond version of what Speed is roughly doing.',
-      "Look (Draw & Fill only) — Stroke width sets how thick the drawn line is. Pen laps re-traces each shape before filling: 1 is a normal pass, 2-3 gives a sketchy, hand-drawn feel without slowing anything down. Fill style is Normal (fades in evenly), Linear (fills like a glass from the bottom, or top-down with Reverse), or Diagonal (sweeps from a corner).",
+      "Look (Draw & Fill only) — Stroke width sets how thick the drawn line is. Pen laps re-traces each shape before filling: 1 is a normal pass, 2-3 gives a sketchy, hand-drawn feel without slowing anything down. Fill style is Normal (fades in evenly), Linear (fills like a surface from the bottom, or top-down with Reverse), or Diagonal (sweeps from a corner).",
       'Ghost preview shows a faint version of the whole logo from the start, sitting underneath the reveal, instead of an empty canvas. Nice touch on logos with a lot of separate pieces.',
       'Timing holds the exact-millisecond controls — hold at start, outline/wipe duration, fill fade, hold at end, and an easing dropdown (Ease Out is a good default: fast start, slow finish).',
       'Loop fade — off by default, meaning a hard cut back to blank when it loops. Switch it on and it dissolves out instead; push Overlap up so the next reveal starts before the fade-out finishes, for a loop with no dead air.',
@@ -215,8 +214,8 @@ function NavSearchBar({ onJump }: { onJump: (slug: string) => void }) {
 
   return (
     <div className="relative w-full max-w-[280px]">
-      <div className="glass-inset flex items-center gap-2 rounded-full px-3.5 py-2">
-        <span className="text-muted">{query ? ARROW_ICON : SEARCH_ICON}</span>
+      <div className="surface flex items-center gap-2 rounded-full px-3.5 py-2 transition-colors focus-within:border-faint">
+        <span className="text-faint">{query ? ARROW_ICON : SEARCH_ICON}</span>
         <input
           ref={inputRef}
           type="text"
@@ -230,14 +229,14 @@ function NavSearchBar({ onJump }: { onJump: (slug: string) => void }) {
           onBlur={() => window.setTimeout(() => setIsFocused(false), 150)}
           onKeyDown={handleKeyDown}
           placeholder="Search docs…"
-          className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-muted"
+          className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-faint"
         />
-        {!query && <kbd className="shrink-0 rounded border border-panel-border px-1.5 py-0.5 text-[10px] text-muted">/</kbd>}
+        {!query && <kbd className="shrink-0 rounded border border-panel-border px-1.5 py-0.5 text-[10px] text-faint">/</kbd>}
       </div>
 
       <div
         className={clsx(
-          'absolute left-0 right-0 top-[calc(100%+8px)] z-20 origin-top overflow-hidden rounded-xl border border-panel-border bg-canvas shadow-2xl transition-all duration-200',
+          'absolute right-0 top-[calc(100%+8px)] z-20 w-[22rem] max-w-[calc(100vw-2rem)] origin-top overflow-hidden rounded-2xl border border-panel-border bg-white shadow-[0_16px_40px_-16px_rgb(0_0_0/0.22)] transition-all duration-200',
           open ? 'max-h-80 scale-100 opacity-100' : 'pointer-events-none max-h-0 scale-95 opacity-0',
         )}
       >
@@ -252,15 +251,15 @@ function NavSearchBar({ onJump }: { onJump: (slug: string) => void }) {
               onClick={() => jumpTo(entry)}
               className={clsx(
                 'flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors',
-                activeIndex === i ? 'bg-accent-soft text-ink' : 'text-muted hover:bg-white/5 hover:text-ink',
+                activeIndex === i ? 'bg-panel-strong text-ink' : 'text-muted hover:bg-panel-strong hover:text-ink',
               )}
             >
               <span className="truncate">{entry.title}</span>
-              <span className="ml-3 shrink-0 text-[10px] text-muted">{entry.label}</span>
+              <span className="ml-3 shrink-0 text-[10px] text-faint">{entry.label}</span>
             </li>
           ))}
         </ul>
-        <div className="flex items-center justify-between border-t border-panel-border px-3 py-2 text-[10px] text-muted">
+        <div className="flex items-center justify-between border-t border-panel-border px-3 py-2 text-[10px] text-faint">
           <span>↵ to jump</span>
           <span>ESC to close</span>
         </div>
@@ -271,19 +270,17 @@ function NavSearchBar({ onJump }: { onJump: (slug: string) => void }) {
 
 function ChangelogEntry({ entry }: { entry: DocEntry }) {
   return (
-    <div id={slugify(entry.label)} data-doc-section className="relative flex scroll-mt-24 flex-col gap-3 md:flex-row md:gap-16">
+    <div id={slugify(entry.label)} data-doc-section className="relative flex scroll-mt-24 flex-col gap-4 border-t border-panel-border py-10 md:flex-row md:gap-16">
       <div className="top-24 flex h-min w-40 shrink-0 items-center md:sticky">
-        <span className="glass-inset rounded-full px-3 py-1 text-[11px] font-medium tracking-wide text-muted">
-          {entry.label}
-        </span>
+        <span className="surface-inset rounded-full px-3 py-1 text-[12px] font-medium text-muted">{entry.label}</span>
       </div>
-      <div className="flex flex-1 flex-col border-b border-panel-border pb-10">
-        <h2 className="mb-2.5 text-lg font-semibold leading-tight text-ink">{entry.title}</h2>
-        {entry.description && <p className="text-sm leading-relaxed text-muted">{entry.description}</p>}
+      <div className="flex min-w-0 flex-1 flex-col">
+        <h2 className="mb-3 text-[clamp(1.4rem,2.2vw,1.8rem)] font-semibold leading-tight tracking-[-0.035em] text-ink">{entry.title}</h2>
+        {entry.description && <p className="max-w-xl text-[16px] leading-relaxed text-muted">{entry.description}</p>}
         {entry.items && (
-          <ul className="mt-3 ml-4 space-y-2 text-sm leading-relaxed text-muted">
+          <ul className="mt-4 ml-5 max-w-xl space-y-2.5 text-[16px] leading-relaxed text-muted">
             {entry.items.map((item, i) => (
-              <li key={i} className="list-disc marker:text-accent">
+              <li key={i} className="list-disc marker:text-faint">
                 {item}
               </li>
             ))}
@@ -295,44 +292,42 @@ function ChangelogEntry({ entry }: { entry: DocEntry }) {
 }
 
 function DocsContent() {
-  const [theme] = useState<Theme>(() => {
-    const saved = localStorage.getItem(THEME_STORAGE_KEY)
-    return saved === 'flat' ? 'flat' : 'liquid'
-  })
   function jumpTo(slug: string) {
     document.getElementById(slug)?.scrollIntoView({ block: 'start' })
   }
 
   return (
-    <div data-theme={theme} className="min-h-screen text-ink">
+    <div className="min-h-screen text-ink">
       <SmoothScroll />
 
-      <header className="glass sticky top-0 z-30 flex items-center gap-4 rounded-none border-x-0 border-t-0 px-6 py-3.5">
-        <button
-          type="button"
-          aria-hidden
-          tabIndex={-1}
-          className="liquid-btn liquid-btn-accent flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white"
-        >
+      <header className="sticky top-0 z-30 flex items-center gap-3 bg-gradient-to-b from-white from-55% to-white/0 px-4 py-4 sm:px-8">
+        <a href="/" aria-label="Move home" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl">
+          <img src="/move-logo.svg" alt="" className="h-5 w-auto select-none invert" draggable={false} />
+        </a>
+        <button type="button" aria-hidden tabIndex={-1} className="btn btn-primary grid h-9 w-9 shrink-0 place-items-center rounded-full text-white">
           {HAMBURGER_ICON}
         </button>
-        <span className="shrink-0 text-sm font-semibold tracking-tight text-ink">Logo Animator Docs</span>
+        <span className="hidden shrink-0 text-sm font-semibold tracking-tight sm:inline">Move Docs</span>
 
         <div className="ml-auto flex items-center gap-3">
           <NavSearchBar onJump={jumpTo} />
-          <a href="/" className="liquid-btn liquid-btn-accent shrink-0 rounded-full px-4 py-2 text-sm font-semibold text-white">
-            Open the app
-          </a>
+          <nav className="nav-pill" aria-label="Main">
+            <a href="/" className="nav-link hidden sm:inline">
+              Home
+            </a>
+            <a href="/app" className="btn btn-primary whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium">
+              Open Move
+            </a>
+          </nav>
         </div>
       </header>
 
-      <div className="mx-auto max-w-3xl px-6 py-8">
-        <h1 className="mb-2 bg-gradient-to-br from-white to-white/60 bg-clip-text text-2xl font-semibold tracking-tight text-transparent">
-          Logo Animator — Docs
-        </h1>
-        <p className="mb-10 text-sm text-muted">How to use it, from a first upload to advanced setting combos.</p>
+      <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-8">
+        <p className="text-[15px] text-faint">Docs</p>
+        <h1 className="mt-2.5 text-[clamp(2.25rem,5vw,4rem)] font-semibold leading-[0.98] tracking-[-0.05em]">How to use Move.</h1>
+        <p className="mb-12 mt-4 max-w-xl text-[17px] leading-relaxed text-muted">From a first upload to advanced setting combos.</p>
 
-        <div className="space-y-10">
+        <div className="border-b border-panel-border">
           {ENTRIES.map((entry) => (
             <ChangelogEntry key={entry.label} entry={entry} />
           ))}

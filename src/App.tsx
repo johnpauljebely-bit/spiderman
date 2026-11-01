@@ -12,28 +12,13 @@ import { DEFAULT_BACKGROUND, DEFAULT_SETTINGS } from './lib/defaults'
 import { combinedBounds, preparePaths, type Bounds, type PreparedPath } from './lib/preparedPath'
 import { imageToImageData, loadImageFromFile, parseSvgText, vectorizeImageData, type VectorizeResult } from './lib/vectorize'
 import type { AnimSettings, BackgroundSettings, PickMode, SequenceGroup } from './types'
-import { Switch } from './components/ui'
 import { AuthGate } from './components/AuthGate'
-import { DocsPage } from './components/DocsPage'
 import { LoadingGate } from './components/LoadingGate'
 import { SmoothScroll } from './components/SmoothScroll'
 import type { DiscordUser } from './lib/discordAuth'
-import { THEME_STORAGE_KEY, type Theme } from './lib/theme'
 
-/** An open-book glyph for the header's Docs button — reads as "guide" without being a literal screenshot of one. */
-const DOCS_MARK = (
-  <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="currentColor" aria-hidden>
-    <path d="M11.25 4.4c-1.9-1.35-4.3-2-6.9-2-.75 0-1.35.6-1.35 1.35v13.4c0 .75.6 1.3 1.35 1.25 2.35-.2 4.5.3 6.4 1.5.16.1.33.15.5.15V4.4Z" />
-    <path d="M12.75 4.4c1.9-1.35 4.3-2 6.9-2 .75 0 1.35.6 1.35 1.35v13.4c0 .75-.6 1.3-1.35 1.25-2.35-.2-4.5.3-6.4 1.5-.16.1-.33.15-.5.15V4.4Z" />
-  </svg>
-)
-
+/** The tool itself: sign in with Discord, then trace, animate and export. Routing lives in main.tsx. */
 export default function App() {
-  // The docs page is public — no reason to gate the user guide behind Discord login.
-  if (window.location.pathname.startsWith('/docs')) {
-    return <DocsPage />
-  }
-
   return (
     <LoadingGate>
       <AuthGate>{(user, logout) => <AppContent user={user} onLogout={logout} />}</AuthGate>
@@ -42,15 +27,6 @@ export default function App() {
 }
 
 function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => void }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem(THEME_STORAGE_KEY)
-    return saved === 'flat' ? 'flat' : 'liquid'
-  })
-
-  useEffect(() => {
-    localStorage.setItem(THEME_STORAGE_KEY, theme)
-  }, [theme])
-
   const [fileName, setFileName] = useState<string | null>(null)
   const [isRaster, setIsRaster] = useState(false)
   const [sourceImage, setSourceImage] = useState<HTMLImageElement | null>(null)
@@ -184,65 +160,51 @@ function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => voi
   )
 
   return (
-    <div data-theme={theme} className="min-h-screen px-6 py-8 text-ink">
+    <div className="min-h-screen px-6 pb-16 text-ink">
       <SmoothScroll />
       <div className="mx-auto max-w-6xl">
-        <header className="mb-6 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="bg-gradient-to-br from-white to-white/60 bg-clip-text text-xl font-semibold tracking-tight text-transparent">
-              Logo Animator
-            </h1>
-            <p className="text-sm text-muted">Trace a logo, tune the reveal, export a looping GIF.</p>
-          </div>
-          <div className="flex shrink-0 items-center gap-3">
-            <a
-              href="/docs"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Docs"
-              aria-label="Docs"
-              className="liquid-btn liquid-btn-accent flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white"
-            >
-              {DOCS_MARK}
+        <header className="sticky top-0 z-40 -mx-6 flex items-center justify-between gap-4 bg-gradient-to-b from-white from-55% to-white/0 px-6 py-4">
+          <a href="/" aria-label="Move home" className="grid h-10 w-10 place-items-center rounded-xl">
+            <img src="/move-logo.svg" alt="" className="h-5 w-auto select-none invert" draggable={false} />
+          </a>
+          <nav className="nav-pill" aria-label="Main">
+            <a href="/docs" target="_blank" rel="noopener" className="nav-link">
+              Docs
             </a>
-            <div
-              className="glass flex shrink-0 items-center gap-2.5 whitespace-nowrap rounded-full px-3.5 py-2"
-              title="Switch between the liquid-glass look and the plain flat-blue look."
-            >
-              <Switch
-                checked={theme === 'liquid'}
-                onChange={(checked) => setTheme(checked ? 'liquid' : 'flat')}
-                label={<span className="font-medium">Liquid Glass</span>}
-              />
-            </div>
-            <div className="glass flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3.5">
+            <span className="flex items-center gap-2 px-2.5">
               {user.avatarUrl ? (
                 <img src={user.avatarUrl} alt="" className="h-6 w-6 rounded-full" />
               ) : (
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-[10px] font-semibold">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[10px] font-semibold shadow-[0_1px_2px_rgb(0_0_0/0.06)]">
                   {(user.globalName ?? user.username).slice(0, 1).toUpperCase()}
-                </div>
+                </span>
               )}
-              <span className="max-w-[9rem] truncate text-xs font-medium">{user.globalName ?? user.username}</span>
-              <button type="button" onClick={onLogout} className="text-xs text-muted transition-colors hover:text-accent">
-                Log out
-              </button>
-            </div>
-          </div>
+              <span className="hidden max-w-[9rem] truncate text-sm font-medium sm:inline">{user.globalName ?? user.username}</span>
+            </span>
+            <button type="button" onClick={onLogout} className="btn btn-primary rounded-full px-4 py-2 text-sm font-medium">
+              Log out
+            </button>
+          </nav>
         </header>
+
+        <div className="pb-8 pt-4">
+          <p className="text-[15px] text-faint">Logo animator</p>
+          <h1 className="mt-2.5 text-[clamp(2.25rem,4.6vw,3.5rem)] font-semibold leading-[0.98] tracking-[-0.05em]">Make your logo move.</h1>
+          <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-muted">Trace a logo, tune the reveal, export a looping GIF.</p>
+        </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
           <div>
             <div
-              className="glass rounded-2xl p-4"
+              className="surface rounded-[20px] p-4"
               style={
                 background.kind === 'transparent'
                   ? {
                       backgroundImage:
-                        'linear-gradient(45deg, #333 25%, transparent 25%), linear-gradient(-45deg, #333 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #333 75%), linear-gradient(-45deg, transparent 75%, #333 75%)',
+                        'linear-gradient(45deg, #e4e4e7 25%, transparent 25%), linear-gradient(-45deg, #e4e4e7 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e4e4e7 75%), linear-gradient(-45deg, transparent 75%, #e4e4e7 75%)',
                       backgroundSize: '20px 20px',
                       backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px',
-                      backgroundColor: '#1a1a1a',
+                      backgroundColor: '#ffffff',
                     }
                   : undefined
               }
@@ -261,7 +223,7 @@ function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => voi
 
             {pickMode === 'end' && selectedPathId && preparedPaths.find((p) => p.id === selectedPathId)?.endLength != null && (
               <div className="mt-2 flex justify-end">
-                <button type="button" onClick={handleClearEndPoint} className="text-xs text-zinc-500 underline hover:text-accent">
+                <button type="button" onClick={handleClearEndPoint} className="text-xs text-muted underline hover:text-ink">
                   Clear end point (draw full loop instead)
                 </button>
               </div>

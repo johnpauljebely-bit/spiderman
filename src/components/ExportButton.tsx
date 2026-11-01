@@ -44,8 +44,8 @@ export function ExportButton({ scene, settings, groups }: { scene: RenderScene |
       </div>
 
       {showQuality && (
-        <div className="glass-inset accordion-content mb-3 rounded-xl p-3.5">
-          <div className="mb-3 flex items-center justify-between text-xs text-zinc-400">
+        <div className="surface-inset accordion-content mb-3 rounded-xl p-3.5">
+          <div className="mb-3 flex items-center justify-between text-xs text-muted">
             <span>Size</span>
             <Select value={String(size)} onChange={(v) => setSize(Number(v))} options={SIZE_OPTIONS} />
           </div>
@@ -75,11 +75,11 @@ export function ExportButton({ scene, settings, groups }: { scene: RenderScene |
         type="button"
         onClick={handleExport}
         disabled={disabled}
-        className="liquid-btn liquid-btn-accent w-full rounded-full py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
+        className="btn btn-primary w-full rounded-full py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
       >
         {progress !== null ? `Rendering… ${Math.round(progress * 100)}%` : 'Export GIF'}
       </button>
-      {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
+      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
     </div>
   )
 }

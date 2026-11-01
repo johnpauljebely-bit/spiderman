@@ -1,0 +1,234 @@
+/* ---------- Move landing ---------- (loaded only on the landing page) */
+
+:root {
+  --ember: #ff5a1f;
+  --ember-hot: #ffb26b;
+  color-scheme: dark;
+}
+html {
+  scroll-behavior: smooth;
+  background: #000;
+}
+body {
+  background: #000;
+  -webkit-font-smoothing: antialiased;
+}
+a:focus-visible {
+  outline: 2px solid var(--ember-hot);
+  outline-offset: 3px;
+}
+
+/* The intro: the glass logo on the light theme's own page colour, then it fades away to the page. */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: #e2e2e5;
+  cursor: pointer;
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.intro[data-leaving] {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+.intro .liquid-glass-logo {
+  max-height: 70svh;
+}
+
+/* The page waits under the intro, then rises in. */
+.page .hero-list,
+.page .scroll-cue,
+.page header {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.page[data-shown] .hero-list,
+.page[data-shown] .scroll-cue,
+.page[data-shown] header {
+  opacity: 1;
+  transform: none;
+}
+.page[data-shown] .hero-list { transition-delay: 0.3s; }
+.page[data-shown] .scroll-cue { transition-delay: 0.45s; }
+
+/* Headline lines rise up from behind a mask, one after another (Brilliant's title reveal). */
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.mask > span {
+  display: block;
+  translate: 0 108%;
+}
+.page[data-shown] .hero .mask > span,
+.rise-on-view.is-in .mask > span,
+.rise-now .mask > span {
+  animation: rise 1s cubic-bezier(0.22, 0.9, 0.24, 1) calc(var(--i, 0) * 90ms + 80ms) both;
+}
+@keyframes rise {
+  from { translate: 0 108%; }
+  to { translate: 0 0; }
+}
+
+/* The menu pill: dark glass over dark sections; over light ones it turns into Brilliant's light pill. */
+.nav-pill {
+  background: rgb(24 24 27 / 0.72);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.site-header .logo {
+  transition: filter 0.3s ease;
+}
+.site-header[data-tone="light"] .logo {
+  filter: invert(1); /* the white logo turns black */
+}
+.site-header[data-tone="light"] .nav-pill {
+  background: rgb(244 244 245 / 0.92);
+  box-shadow: none;
+}
+.site-header[data-tone="light"] .nav-link {
+  color: #5d5d63;
+}
+.site-header[data-tone="light"] .nav-link:hover {
+  color: #0c0c0d;
+}
+.site-header[data-tone="light"] .nav-cta {
+  background: #0c0c0d;
+  color: #fff;
+}
+.site-header .nav-link,
+.site-header .nav-cta {
+  transition: color 0.3s ease, background-color 0.3s ease, transform 0.15s ease;
+}
+
+/* Night side of a planet seen from orbit: a thin orange edge, a white-hot band of
+   atmosphere, then blue haze fading into space. A very wide ellipse keeps the
+   curve gentle; the slight tilt and the brighter right side follow the sun. */
+.horizon {
+  position: absolute;
+  left: 43%;
+  top: 84svh;
+  width: max(2200px, 340vw);
+  height: max(620px, 95vw);
+  border-radius: 50%;
+  translate: -50% 0;
+  rotate: 1.4deg;
+  background: radial-gradient(ellipse 40% 4% at 50% 0%, #040814 0%, #010205 100%);
+  box-shadow:
+    0 0 0 2px rgb(255 125 45),
+    0 -4px 6px 8px rgb(255 255 255),
+    0 -8px 16px 14px rgb(220 238 255 / 0.95),
+    0 -14px 32px 22px rgb(70 165 255 / 0.95),
+    0 -24px 60px 32px rgb(25 120 255 / 0.8),
+    0 -40px 120px 46px rgb(15 85 240 / 0.45),
+    0 -60px 200px 60px rgb(10 60 220 / 0.25);
+}
+.sunside {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(45% 22% at 100% 86%, rgb(40 140 255 / 0.32), transparent 70%);
+}
+.horizon,
+.sunside {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1s ease, transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.page[data-shown] .horizon,
+.page[data-shown] .sunside {
+  opacity: 1;
+  transform: none;
+}
+.stars {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 41% 9%, #cfe4ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 73% 14%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 86% 46%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 50% 61%, #9fd0ff 50%, transparent 51%);
+}
+
+/* The footer's giant "Move" in halftone dots, fading out towards the bottom like before. */
+.halftone-wordmark {
+  position: relative;
+  -webkit-mask-image: linear-gradient(#000 15%, transparent 92%);
+  mask-image: linear-gradient(#000 15%, transparent 92%);
+  touch-action: pan-y;
+}
+.halftone-wordmark canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Feature rows fade up as they scroll in; the arrow nudges on hover. */
+.reveal {
+  opacity: 0;
+  translate: 0 32px;
+  transition: opacity 0.9s ease, translate 1s cubic-bezier(0.22, 0.9, 0.24, 1);
+}
+.reveal.is-in {
+  opacity: 1;
+  translate: 0 0;
+}
+.feature-row .feature-arrow {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+.feature-row:hover .feature-arrow {
+  transform: translate(3px, -3px);
+  color: var(--ember);
+}
+
+.ember-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ember);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .intro,
+  .horizon,
+  .sunside,
+  .reveal,
+  .page .hero-list,
+  .page .scroll-cue,
+  .page header {
+    transition-duration: 0.01s !important;
+    transition-delay: 0s !important;
+    transform: none !important;
+    translate: none !important;
+  }
+  .mask > span {
+    animation: none !important;
+    translate: none;
+  }
+}
+
+/* The "we updated the site" banner: two identical halves slide left by one half, so the loop never jumps. */
+.news-track {
+  animation: news-scroll 38s linear infinite;
+}
+.news-banner:hover .news-track {
+  animation-play-state: paused;
+}
+@keyframes news-scroll {
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .news-track { animation: none; }
+}

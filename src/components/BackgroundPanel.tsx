@@ -26,14 +26,14 @@ export function BackgroundPanel({
       </div>
 
       {background.kind === 'color' && (
-        <div className="glass-inset flex items-center gap-3 rounded-lg px-3 py-2">
+        <div className="surface-inset flex items-center gap-3 rounded-lg px-3 py-2">
           <input
             type="color"
             value={background.color}
             onChange={(e) => onChange({ ...background, color: e.target.value })}
             className="h-9 w-9 cursor-pointer rounded-md border border-panel-border bg-transparent p-0"
           />
-          <span className="text-xs text-zinc-400">{background.color}</span>
+          <span className="text-xs text-muted">{background.color}</span>
         </div>
       )}
 
@@ -63,7 +63,7 @@ export function BackgroundPanel({
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="w-full rounded-xl border border-dashed border-panel-border bg-black/15 py-4 text-center text-xs text-zinc-400 transition-colors hover:border-accent hover:text-zinc-200"
+            className="w-full rounded-xl border border-dashed border-panel-border bg-panel-strong py-4 text-center text-xs text-muted transition-colors hover:border-ink hover:text-ink"
           >
             {background.image ? 'Change background image' : 'Choose background image'}
           </button>

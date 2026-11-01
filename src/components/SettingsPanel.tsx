@@ -43,7 +43,7 @@ const FILL_STYLE_OPTIONS: { value: AnimSettings['fillStyle']; label: string }[] 
 function fillStyleHint(style: AnimSettings['fillStyle'], reversed: boolean): string {
   if (style === 'normal') return 'The color fades in evenly across the whole shape at once.'
   if (style === 'linear') {
-    return reversed ? 'The color comes down from the top, like drawing a blind.' : 'The color rises up from the bottom, like a glass filling.'
+    return reversed ? 'The color comes down from the top, like drawing a blind.' : 'The color rises up from the bottom, like a surface filling.'
   }
   return reversed
     ? 'The color sweeps in from the top-right corner toward the bottom-left.'
@@ -56,7 +56,7 @@ function ReverseToggle({ reversed, onChange }: { reversed: boolean; onChange: (v
       type="button"
       onClick={() => onChange(!reversed)}
       className={`rounded-md border px-2 py-1 text-[11px] font-medium transition-colors ${
-        reversed ? 'border-accent bg-accent text-white' : 'border-panel-border text-zinc-400 hover:text-zinc-200'
+        reversed ? 'border-accent bg-accent text-white' : 'border-panel-border text-muted hover:text-ink'
       }`}
     >
       Reverse
@@ -131,7 +131,7 @@ const PRESETS: { id: string; label: string; hint: string; speed: number; look: P
     },
   },
   {
-    id: 'glass',
+    id: 'surface',
     label: 'Glass fill',
     hint: 'Color rises like water',
     speed: 0.7,
@@ -160,7 +160,7 @@ function SimpleControls({
     <div className="space-y-4">
       <div>
         <div className="mb-1.5 flex items-center justify-between">
-          <span className="text-xs text-zinc-400">Pick a look</span>
+          <span className="text-xs text-muted">Pick a look</span>
           {!activePreset && <span className="text-[11px] text-muted">Custom</span>}
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -172,7 +172,7 @@ function SimpleControls({
                 type="button"
                 onClick={() => onChange({ ...preset.look, speed: preset.speed })}
                 className={`rounded-xl px-3 py-2.5 text-left transition-colors ${
-                  active ? 'liquid-btn liquid-btn-accent text-white' : 'glass-inset text-zinc-300 hover:text-white'
+                  active ? 'btn btn-primary text-white' : 'surface-inset text-ink hover:border-faint'
                 }`}
               >
                 <span className="block text-xs font-semibold">{preset.label}</span>
@@ -194,7 +194,7 @@ function SimpleControls({
         formatValue={(v) => `${v}%`}
       />
 
-      <div className="glass-inset space-y-2.5 rounded-lg px-3 py-2.5">
+      <div className="surface-inset space-y-2.5 rounded-lg px-3 py-2.5">
         <Switch
           checked={settings.fadeOutMs > 0}
           onChange={(checked) => onChange(checked ? { fadeOutMs: 600, fadeOverlapMs: 300 } : { fadeOutMs: 0 })}
@@ -242,7 +242,7 @@ export function SettingsPanel({
 
   return (
     <Panel title="Animation" className="space-y-2.5">
-      <div className="glass-inset rounded-lg px-3 py-2">
+      <div className="surface-inset rounded-lg px-3 py-2">
         <Switch
           checked={simple}
           onChange={handleSimpleChange}
@@ -305,7 +305,7 @@ export function SettingsPanel({
               />
               <div>
                 <div className="mb-1.5 flex items-center justify-between">
-                  <span className="text-xs text-zinc-400">Fill style</span>
+                  <span className="text-xs text-muted">Fill style</span>
                   {settings.fillStyle !== 'normal' && (
                     <ReverseToggle reversed={settings.fillStyleReverse} onChange={(fillStyleReverse) => onChange({ fillStyleReverse })} />
                   )}
@@ -461,7 +461,7 @@ export function SettingsPanel({
             subtitle="Dissolve at the end of each loop instead of a hard cut"
             badge={settings.fadeOutMs > 0 ? <Badge tone="accent">on</Badge> : undefined}
           >
-            <div className="glass-inset mb-3 flex items-center justify-between rounded-lg px-3 py-2">
+            <div className="surface-inset mb-3 flex items-center justify-between rounded-lg px-3 py-2">
               <Switch
                 checked={settings.fadeOutMs > 0}
                 onChange={(checked) => onChange({ fadeOutMs: checked ? 600 : 0 })}
@@ -494,7 +494,7 @@ export function SettingsPanel({
                 />
                 <div>
                   <div className="mb-1.5 flex items-center justify-between">
-                    <span className="text-xs text-zinc-400">Fade out style</span>
+                    <span className="text-xs text-muted">Fade out style</span>
                     {settings.fadeOutStyle !== 'normal' && (
                       <ReverseToggle reversed={settings.fadeOutReverse} onChange={(fadeOutReverse) => onChange({ fadeOutReverse })} />
                     )}
