@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { AccessDeniedScreen } from './AccessDeniedScreen'
 import { LoginScreen } from './LoginScreen'
 import { ALLOWED_DISCORD_USER_IDS } from '../lib/allowedUsers'
+import { track } from '../lib/analytics'
 import { clearSession, consumeTokenFromRedirect, fetchDiscordUser, loadSession, saveSession, type DiscordUser } from '../lib/discordAuth'
 
 type AuthState =
@@ -43,8 +44,10 @@ export function AuthGate({ children }: { children: (user: DiscordUser, logout: (
           const user = await fetchDiscordUser(freshToken)
           if (isAllowed(user)) {
             saveSession(user)
+            track('signin')
             setState({ status: 'authorized', user })
           } else {
+            track('denied')
             setState({ status: 'denied', user })
           }
         } catch (err) {

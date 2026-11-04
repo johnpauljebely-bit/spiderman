@@ -8,6 +8,7 @@ import { UploadPanel } from './components/UploadPanel'
 import { getTotalDurationMs } from './lib/animate'
 import { computeAutoGroups } from './lib/autoSequence'
 import { autoCalibrate } from './lib/colorAnalysis'
+import { track } from './lib/analytics'
 import { DEFAULT_BACKGROUND, DEFAULT_SETTINGS } from './lib/defaults'
 import { combinedBounds, preparePaths, type Bounds, type PreparedPath } from './lib/preparedPath'
 import { imageToImageData, loadImageFromFile, parseSvgText, vectorizeImageData, type VectorizeResult } from './lib/vectorize'
@@ -84,6 +85,7 @@ function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => voi
     setFileName(file.name)
     setError(null)
     const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg')
+    track(isSvg ? 'upload_svg' : 'upload_image')
 
     if (isSvg) {
       setIsRaster(false)

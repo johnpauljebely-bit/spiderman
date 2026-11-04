@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { AnimSettings } from '../types'
+import { track } from '../lib/analytics'
 import { DEFAULT_SETTINGS } from '../lib/defaults'
 import { EASING_OPTIONS } from '../lib/easing'
 import { Badge, FieldRow, Panel, Section, SegmentedControl, Select, SliderRow, Switch } from './ui'
@@ -170,7 +171,10 @@ function SimpleControls({
               <button
                 key={preset.id}
                 type="button"
-                onClick={() => onChange({ ...preset.look, speed: preset.speed })}
+                onClick={() => {
+                  track(`look_${preset.id}` as 'look_clean')
+                  onChange({ ...preset.look, speed: preset.speed })
+                }}
                 className={`rounded-md px-3 py-2.5 text-left transition-colors ${
                   active ? 'btn btn-primary' : 'surface-inset text-ink hover:border-faint'
                 }`}

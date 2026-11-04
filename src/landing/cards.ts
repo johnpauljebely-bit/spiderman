@@ -20,10 +20,10 @@ export const AVATAR = '/favicon-512.png'
 
 export const CARDS: Card[] = [
   {
-    id: 'shot-tool-1',
-    title: 'One Panel',
-    place: 'Simple mode',
-    note: 'Pick a look, set the speed, switch on a smooth loop. Simple mode is on by default and keeps everything else out of the way.',
+    id: 'w-3',
+    title: 'Held',
+    place: 'Fade Wipe · Cinematic',
+    note: 'The sweep has finished and the logo is held, cropped in close, before the loop starts again.',
   },
   {
     id: 'w-1',
@@ -87,10 +87,10 @@ export const CARDS: Card[] = [
     tall: true,
   },
   {
-    id: 'w-3',
-    title: 'Held',
-    place: 'Fade Wipe · Cinematic',
-    note: 'The sweep has finished and the logo is held, cropped in close, before the loop starts again.',
+    id: 'shot-tool-1',
+    title: 'One Panel',
+    place: 'Simple mode',
+    note: 'The tool with the Move logo loaded on an orange background. Logo, Background and Animation sit in one column; Simple mode is on by default and keeps the choices to a handful of looks.',
   },
   {
     id: 'w-4',
@@ -105,10 +105,10 @@ export const CARDS: Card[] = [
     note: 'A blue logo on yellow, cropped in so close that the shape runs off the edges.',
   },
   {
-    id: 'k-5',
-    title: 'Cropped Sweep',
-    place: 'Fade Wipe · Cinematic',
-    note: 'The color sweeping in diagonally with a soft edge, cropped in close on black.',
+    id: 'shot-docs-1',
+    title: 'The Docs',
+    place: 'Guide',
+    note: 'A plain-language guide: the fastest way to a result, every control explained, plus looks and setting combinations worth trying.',
   },
   {
     id: 'c-blue-2',
@@ -123,10 +123,10 @@ export const CARDS: Card[] = [
     note: 'One click with Discord keeps you signed in for five days. The tool is open to approved accounts.',
   },
   {
-    id: 'shot-docs-1',
-    title: 'The Docs',
-    place: 'Guide',
-    note: 'A plain-language guide: the fastest way to a result, every control explained, plus looks and setting combinations worth trying.',
+    id: 'k-5',
+    title: 'Cropped Sweep',
+    place: 'Fade Wipe · Cinematic',
+    note: 'The color sweeping in diagonally with a soft edge, cropped in close on black.',
   },
   {
     id: 'w-5',

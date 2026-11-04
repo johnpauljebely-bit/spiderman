@@ -32,6 +32,18 @@ const SECTIONS: Section[] = [
     paragraphs: ['A setting or two, such as whether Simple mode is switched on. Clearing your browser’s site data removes them.'],
   },
   {
+    label: 'Counts',
+    title: 'Anonymous usage counts',
+    paragraphs: ['Move keeps simple totals so its owner can see how the site is used. It does not track you.'],
+    items: [
+      'It counts visits, which pages are opened, sign-ins, which look is picked, and how many logos are added and GIFs exported.',
+      'For each visit it notes your country and whether you are on a phone, tablet or computer, and the name of the site that sent you, if any.',
+      'Unique visitors are counted with a hash that changes every day, so nobody can be followed from one day to the next.',
+      'No cookies are used for this. IP addresses, Discord accounts and logos are never stored with the counts.',
+      'The counts are kept for about 13 months.',
+    ],
+  },
+  {
     label: 'Third parties',
     title: 'Fonts and hosting',
     items: [

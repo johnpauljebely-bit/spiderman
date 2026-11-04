@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { AnimSettings, SequenceGroup } from '../types'
+import { track } from '../lib/analytics'
 import { downloadBlob, exportGif } from '../lib/gifExport'
 import type { RenderScene } from '../lib/render'
 import { Select, SliderRow } from './ui'
@@ -26,6 +27,7 @@ export function ExportButton({ scene, settings, groups }: { scene: RenderScene |
     try {
       const blob = await exportGif(scene, settings, groups, { width: size, height: size, fps, maxColors }, setProgress)
       downloadBlob(blob, 'logo-animation.gif')
+      track('export')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Export failed')
     } finally {
