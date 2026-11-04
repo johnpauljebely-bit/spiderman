@@ -6,7 +6,7 @@ import { hwfRadius, hwfStep, hwfWarmth } from './halftone-physics';
 // a shock ring on click) but keeps this site's look: faint white dots, fading out towards the bottom.
 const MARK = '/move-logo.svg';
 const MARK_ASPECT = 920 / 581;
-const FONT = '"Instrument Sans Variable", "Helvetica Neue", Arial, sans-serif';
+const FONT = 'Inter, "Helvetica Neue", Arial, sans-serif';
 const GAP = 5; // px between dot centres
 const PUSH = 80; // px the pointer reaches
 const REST = 0.1; // dot opacity at rest (the old wordmark's colour)
@@ -57,7 +57,7 @@ export function HalftoneWordmark({ className = '' }: { className?: string }) {
       const markW = markH * MARK_ASPECT;
       const left = w * 0.025;
       if (mark.complete && mark.naturalWidth) m.drawImage(mark, left, baseline - markH, markW, markH);
-      m.font = `600 ${size}px ${FONT}`;
+      m.font = `500 ${size}px ${FONT}`;
       m.letterSpacing = `${-0.05 * size}px`;
       m.textBaseline = 'alphabetic';
       m.fillStyle = '#000';
@@ -167,7 +167,7 @@ export function HalftoneWordmark({ className = '' }: { className?: string }) {
 
     // Lay out now, and again once the font and the logo have actually arrived.
     relayout();
-    Promise.all([document.fonts.load(`600 100px ${FONT}`), mark.decode().catch(() => {})]).then(relayout);
+    Promise.all([document.fonts.load(`500 100px ${FONT}`), mark.decode().catch(() => {})]).then(relayout);
 
     root.addEventListener('pointermove', onMove);
     root.addEventListener('pointerleave', onLeave);

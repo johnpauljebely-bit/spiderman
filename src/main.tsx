@@ -11,9 +11,11 @@ if (location.pathname === '/' && location.hash.includes('access_token')) {
   const path = location.pathname
   const Page = /^\/docs(\/|$)/.test(path)
     ? lazy(() => import('./components/DocsPage').then((m) => ({ default: m.DocsPage })))
-    : /^\/app(\/|$)/.test(path)
-      ? lazy(() => import('./App.tsx'))
-      : lazy(() => import('./landing/Landing.tsx'))
+    : /^\/legal(\/|$)/.test(path)
+      ? lazy(() => import('./components/LegalPage').then((m) => ({ default: m.LegalPage })))
+      : /^\/app(\/|$)/.test(path)
+        ? lazy(() => import('./App.tsx'))
+        : lazy(() => import('./landing/Landing.tsx'))
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>

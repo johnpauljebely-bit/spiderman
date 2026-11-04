@@ -165,9 +165,9 @@ function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => voi
   return (
     <div className="min-h-screen px-6 pb-16 text-ink">
       <div className="mx-auto max-w-6xl">
-        <header className="sticky top-0 z-40 -mx-6 flex items-center justify-between gap-4 bg-gradient-to-b from-white from-55% to-white/0 px-6 py-4">
+        <header className="sticky top-0 z-40 -mx-6 flex items-center justify-between gap-4 bg-gradient-to-b from-black from-55% to-black/0 px-6 py-4">
           <a href="/" aria-label="Move home" className="grid h-10 w-10 place-items-center rounded-xl">
-            <img src="/move-logo.svg" alt="" className="h-5 w-auto select-none invert" draggable={false} />
+            <img src="/move-logo.svg" alt="" className="h-5 w-auto select-none" draggable={false} />
           </a>
           <nav className="app-nav-pill" aria-label="Main">
             <a href="/docs" target="_blank" rel="noopener" className="app-nav-link">
@@ -177,7 +177,7 @@ function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => voi
               {user.avatarUrl ? (
                 <img src={user.avatarUrl} alt="" className="h-6 w-6 rounded-full" />
               ) : (
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[10px] font-semibold shadow-[0_1px_2px_rgb(0_0_0/0.06)]">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/12 text-[10px] font-medium">
                   {(user.globalName ?? user.username).slice(0, 1).toUpperCase()}
                 </span>
               )}
@@ -190,15 +190,15 @@ function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => voi
         </header>
 
         <div className="pb-8 pt-4">
-          <p className="text-[15px] text-faint">Logo animator</p>
-          <h1 className="mt-2.5 text-[clamp(2.25rem,4.6vw,3.5rem)] font-semibold leading-[0.98] tracking-[-0.05em]">Make your logo move.</h1>
-          <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-muted">Trace a logo, tune the reveal, export a looping GIF.</p>
+          <p className="label">Logo animator</p>
+          <h1 className="font-display mt-3 text-[clamp(2.25rem,4.6vw,3.5rem)] leading-[1.06] tracking-[-0.005em]">Make your logo move.</h1>
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-muted">Trace a logo, tune the reveal, export a looping GIF.</p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
           <div>
             <div
-              className="surface rounded-[20px] p-4"
+              className="surface rounded-md p-4"
               style={
                 background.kind === 'transparent'
                   ? {

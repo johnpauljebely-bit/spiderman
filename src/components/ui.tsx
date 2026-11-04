@@ -3,8 +3,8 @@ import { useId, useState, type CSSProperties, type ReactNode } from 'react'
 
 export function Panel({ title, children, className }: { title?: string; children: ReactNode; className?: string }) {
   return (
-    <div className={clsx('surface rounded-[20px] p-5', className)}>
-      {title && <h3 className="mb-3 text-sm font-semibold tracking-tight text-ink">{title}</h3>}
+    <div className={clsx('surface rounded-md p-5', className)}>
+      {title && <h3 className="font-display mb-3 text-[18px] leading-tight tracking-[-0.005em] text-ink">{title}</h3>}
       {children}
     </div>
   )
@@ -34,14 +34,14 @@ export function Section({
   const contentId = useId()
 
   return (
-    <div className="surface-raised overflow-hidden rounded-xl">
+    <div className="surface-raised overflow-hidden rounded-md">
       <div className="flex items-center">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls={contentId}
-          className="flex flex-1 items-center gap-2.5 px-3.5 py-3 text-left transition-colors hover:bg-black/[0.02]"
+          className="flex flex-1 items-center gap-2.5 px-3.5 py-3 text-left transition-colors hover:bg-white/[0.03]"
         >
           <svg
             viewBox="0 0 20 20"
@@ -74,7 +74,7 @@ export function Badge({ children, tone = 'default' }: { children: ReactNode; ton
     <span
       className={clsx(
         'rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none',
-        tone === 'accent' ? 'bg-accent text-white' : 'bg-panel-strong text-muted',
+        tone === 'accent' ? 'bg-accent text-black' : 'bg-panel-strong text-muted',
       )}
     >
       {children}
@@ -89,13 +89,14 @@ export function Switch({ checked, onChange, label, hint }: { checked: boolean; o
       <span
         className={clsx(
           'relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-150',
-          checked ? 'bg-accent' : 'bg-[#d4d4d8]',
+          checked ? 'bg-accent' : 'bg-white/15',
         )}
       >
         <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="peer absolute inset-0 m-0 cursor-pointer opacity-0" />
         <span
           className={clsx(
-            'inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform duration-150',
+            'inline-block h-3.5 w-3.5 transform rounded-full shadow transition-transform duration-150',
+            checked ? 'bg-black' : 'bg-ink',
             checked ? 'translate-x-[18px]' : 'translate-x-[3px]',
           )}
         />
@@ -180,7 +181,7 @@ export function SegmentedControl<T extends string>({
           onClick={() => onChange(opt.value)}
           className={clsx(
             'flex-1 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
-            value === opt.value ? 'bg-white text-ink shadow-[0_1px_2px_rgb(0_0_0/0.06)]' : 'text-muted hover:text-ink',
+            value === opt.value ? 'bg-white/12 text-ink' : 'text-muted hover:text-ink',
           )}
         >
           {opt.label}
@@ -206,7 +207,7 @@ export function Select<T extends string>({
       className="surface-inset rounded-md px-2 py-1 text-xs text-ink outline-none"
     >
       {options.map((opt) => (
-        <option key={opt.value} value={opt.value} className="bg-white text-ink">
+        <option key={opt.value} value={opt.value} className="bg-[#111] text-ink">
           {opt.label}
         </option>
       ))}

@@ -146,7 +146,7 @@ export function SequenceEditor({
               type="button"
               onClick={() => onPickModeChange(pickMode === opt.value ? 'none' : opt.value)}
               className={`flex-1 rounded-full px-2 py-1.5 text-xs font-medium transition-colors ${
-                pickMode === opt.value ? 'bg-white text-ink shadow-[0_1px_2px_rgb(0_0_0/0.06)]' : 'text-muted hover:text-ink'
+                pickMode === opt.value ? 'bg-white/12 text-ink' : 'text-muted hover:text-ink'
               }`}
             >
               {opt.label}
@@ -262,7 +262,7 @@ function ManualGrouping({
                 onPickModeChange('assign')
               }}
               className={`flex cursor-grab flex-col gap-1 rounded-md border px-2 py-1.5 transition-colors active:cursor-grabbing ${
-                isActive ? 'border-ink bg-white' : 'surface-inset hover:border-faint'
+                isActive ? 'border-ink bg-white/5' : 'surface-inset hover:border-faint'
               } ${overIndex === i ? 'border-accent' : ''} ${dragIndex === i ? 'opacity-40' : ''}`}
             >
               <div className="flex items-center gap-2">
@@ -275,7 +275,7 @@ function ManualGrouping({
                     e.stopPropagation()
                     removeGroup(group.id)
                   }}
-                  className="ml-auto px-1 text-faint hover:text-red-600"
+                  className="ml-auto px-1 text-faint hover:text-red-400"
                 >
                   ✕
                 </button>

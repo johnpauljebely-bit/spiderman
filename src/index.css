@@ -1,21 +1,22 @@
 @import "tailwindcss";
-@import "@fontsource-variable/instrument-sans";
 
-/* The tool, the docs and the sign-in screens share the Andre app screens' look: white paper, near-black
-   ink, hairline borders, grey pills and black buttons. (The landing page has its own dark styles in
-   landing/landing.css, loaded only there.) */
+/* One look across the whole site: a black page, warm off-white ink, hairline borders, Playfair Display for
+   headings and Inter (light) for everything else. The fonts come from the Google Fonts link in index.html.
+   The landing page adds its own layout rules in landing/archive.css, loaded only there. */
 
 @theme {
-  --font-sans: 'Instrument Sans Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --color-canvas: #ffffff;
-  --color-panel: #ffffff;
-  --color-panel-border: #ececee;
-  --color-panel-strong: #f4f4f5;
-  --color-accent: #0c0c0d;
-  --color-accent-soft: #f4f4f5;
-  --color-ink: #0c0c0d;
-  --color-muted: #5d5d63;
-  --color-faint: #8e8e95;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-serif: 'Playfair Display', 'Times New Roman', serif;
+  --color-canvas: #000000;
+  --color-panel: #0a0a0a;
+  --color-panel-border: rgba(244, 242, 239, 0.14);
+  --color-panel-strong: #111111;
+  --color-accent: #f4f2ef;
+  --color-accent-soft: rgba(244, 242, 239, 0.08);
+  --color-ink: #f4f2ef;
+  --color-muted: rgba(244, 242, 239, 0.62);
+  --color-faint: #8c8783;
+  --color-line: rgba(244, 242, 239, 0.28);
 }
 
 html,
@@ -23,8 +24,10 @@ body {
   height: 100%;
   background: var(--color-canvas);
   color: var(--color-ink);
-  color-scheme: light;
+  color-scheme: dark;
+  font-weight: 300;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Lenis's own documented override — without it, the fixed height above clamps scrollable content
@@ -35,8 +38,8 @@ html.lenis body {
   height: auto;
 }
 
-/* Lenis scrolls a little every frame; a CSS scroll-behavior: smooth (the landing page has one for anchor
-   links) would animate each of those steps and make it lag. */
+/* Lenis scrolls a little every frame; a CSS scroll-behavior: smooth would animate each of those steps
+   and make it lag. */
 html.lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
@@ -51,21 +54,35 @@ html.lenis.lenis-smooth {
 
 ::selection {
   background: var(--color-ink);
-  color: #fff;
+  color: #000;
 }
 
 a:focus-visible,
 button:focus-visible,
 summary:focus-visible {
-  outline: 2px solid var(--color-ink);
+  outline: 1px solid var(--color-ink);
   outline-offset: 3px;
 }
 
+/* Serif display type: Playfair Display, weight 400, used for every heading. */
+.font-display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+}
+
+/* Small labels: uppercase, wide-tracked, dim. */
+.label {
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(244, 242, 239, 0.42);
+}
+
 /* ---- Surfaces ----
-   Cards are plain white with a hairline border. Fields and segmented containers are the soft grey. */
+   Cards are near-black with a hairline border. Fields and segmented containers are a touch lighter. */
 
 .surface {
-  background: #fff;
+  background: var(--color-panel);
   border: 1px solid var(--color-panel-border);
 }
 .surface-inset {
@@ -73,25 +90,26 @@ summary:focus-visible {
   border: 1px solid transparent;
 }
 .surface-raised {
-  background: #fff;
+  background: #0d0d0d;
   border: 1px solid var(--color-panel-border);
 }
 
-/* ---- Buttons: pills, black for the main action ---- */
+/* ---- Buttons: outlined pills; the main action is the inverse (ink on black) ---- */
 
 .btn {
-  border: 1px solid var(--color-panel-border);
-  background: #fff;
+  border: 1px solid rgba(244, 242, 239, 0.25);
+  background: transparent;
   color: var(--color-ink);
   cursor: pointer;
   transition:
     border-color 0.2s ease,
     opacity 0.2s ease,
     background-color 0.2s ease,
+    color 0.2s ease,
     transform 0.15s ease;
 }
 .btn:hover {
-  border-color: var(--color-faint);
+  border-color: rgba(244, 242, 239, 0.7);
 }
 .btn:active {
   transform: scale(0.98);
@@ -99,33 +117,34 @@ summary:focus-visible {
 .btn-primary {
   border-color: var(--color-ink);
   background: var(--color-ink);
-  color: #fff;
+  color: #000;
 }
 .btn-primary:hover {
-  border-color: var(--color-ink);
-  opacity: 0.85;
+  border-color: #fff;
+  background: #fff;
 }
 .btn:disabled {
   cursor: not-allowed;
 }
 
-/* The pill that holds the page's links in the top bar (grey, with a white chip on the current page).
-   Named app-* because the landing page has its own .nav-pill / .nav-link with different colours. */
+/* The pill that holds the page's links in the top bar. Named app-* because the old landing page had its
+   own .nav-pill / .nav-link with different colours. */
 .app-nav-pill {
   display: flex;
   align-items: center;
   gap: 2px;
   padding: 4px;
   border-radius: 999px;
-  background: rgb(244 244 245 / 0.92);
-  backdrop-filter: blur(14px) saturate(1.4);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  background: rgba(244, 242, 239, 0.07);
+  border: 1px solid rgba(244, 242, 239, 0.12);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
 }
 .app-nav-link {
   padding: 8px 14px;
   border-radius: 999px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-muted);
   transition:
     color 0.2s ease,
@@ -136,8 +155,7 @@ summary:focus-visible {
 }
 .app-nav-link[aria-current='page'] {
   color: var(--color-ink);
-  background: #fff;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  background: rgba(244, 242, 239, 0.12);
 }
 
 /* ---- Gooey loader (GooeyLoader.tsx) ---- */
@@ -203,13 +221,13 @@ summary:focus-visible {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #0c0c0d26;
+  background: rgba(244, 242, 239, 0.18);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #0c0c0d45;
+  background: rgba(244, 242, 239, 0.32);
   background-clip: padding-box;
 }
 
@@ -218,47 +236,47 @@ summary:focus-visible {
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
-  height: 4px;
+  height: 2px;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--color-ink) 0%, var(--color-ink) var(--fill, 0%), #e4e4e7 var(--fill, 0%), #e4e4e7 100%);
+  background: linear-gradient(90deg, var(--color-ink) 0%, var(--color-ink) var(--fill, 0%), rgba(244, 242, 239, 0.16) var(--fill, 0%), rgba(244, 242, 239, 0.16) 100%);
   outline: none;
 }
 
 input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 999px;
-  background: #fff;
-  box-shadow: 0 0 0 2px var(--color-ink), 0 2px 6px #00000030;
+  background: var(--color-ink);
+  box-shadow: 0 0 0 3px #000, 0 0 0 4px rgba(244, 242, 239, 0.45);
   cursor: pointer;
   border: none;
   margin-top: 0;
 }
 
 input[type='range']::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 999px;
-  background: #fff;
-  box-shadow: 0 0 0 2px var(--color-ink), 0 2px 6px #00000030;
+  background: var(--color-ink);
+  box-shadow: 0 0 0 3px #000, 0 0 0 4px rgba(244, 242, 239, 0.45);
   cursor: pointer;
   border: none;
 }
 
 input[type='range']::-moz-range-track {
-  height: 4px;
+  height: 2px;
   border-radius: 999px;
-  background: #e4e4e7;
+  background: rgba(244, 242, 239, 0.16);
 }
 input[type='range']::-moz-range-progress {
-  height: 4px;
+  height: 2px;
   border-radius: 999px;
   background: var(--color-ink);
 }
 
-/* ---- Checkboxes ---- */
+/* ---- Checkboxes, colour pickers ---- */
 
 input[type='checkbox'] {
   accent-color: var(--color-ink);
@@ -296,4 +314,26 @@ input[type='checkbox'] {
 
 .accordion-content {
   animation: accordion-in 160ms ease-out;
+}
+
+/* ---- Footer (SiteFooter.tsx) ---- */
+
+/* The footer's giant "Move" in halftone dots, fading out towards the bottom. */
+.halftone-wordmark {
+  position: relative;
+  -webkit-mask-image: linear-gradient(#000 15%, transparent 92%);
+  mask-image: linear-gradient(#000 15%, transparent 92%);
+  touch-action: pan-y;
+}
+.halftone-wordmark canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ember-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff5a1f;
 }

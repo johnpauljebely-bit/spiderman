@@ -75,11 +75,11 @@ export function ExportButton({ scene, settings, groups }: { scene: RenderScene |
         type="button"
         onClick={handleExport}
         disabled={disabled}
-        className="btn btn-primary w-full rounded-full py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
+        className="btn btn-primary w-full rounded-full py-2.5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40"
       >
         {progress !== null ? `Rendering… ${Math.round(progress * 100)}%` : 'Export GIF'}
       </button>
-      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
     </div>
   )
 }

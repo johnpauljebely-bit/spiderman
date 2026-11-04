@@ -11,7 +11,7 @@ export interface GooeyLoaderProps extends HTMLAttributes<HTMLDivElement> {
 /** Two blobs merging/splitting behind a gooey SVG filter, for any spinner-shaped wait. Size scales
  * with font-size (it's all `em` under the hood) — drop a text size class on it to resize. */
 export const GooeyLoader = forwardRef<HTMLDivElement, GooeyLoaderProps>(
-  ({ className, primaryColor = 'var(--color-accent)', secondaryColor = '#a1a1aa', borderColor = 'var(--color-panel-border)', style, ...props }, ref) => {
+  ({ className, primaryColor = 'var(--color-accent)', secondaryColor = '#8c8783', borderColor = 'var(--color-panel-border)', style, ...props }, ref) => {
     const filterId = useId()
 
     return (

@@ -8,12 +8,14 @@ const HOLD_MS = 1000;
 const FADE_MS = 600;
 const GIVE_UP_MS = 5000; // no WebGL or the logo didn't load: don't keep anyone waiting
 
-/** Plays the liquid-glass logo before the page shows, then fades away. Click or Esc skips it. */
-export function Intro({ onDone }: { onDone: () => void }) {
+/** Plays the liquid-glass logo on the grey plate before the page shows. onLeave fires as it starts to fade (the page fades in underneath), onDone once it is gone. Click or Esc skips it. */
+export function Intro({ onLeave, onDone }: { onLeave: () => void; onDone: () => void }) {
   const box = useRef<HTMLDivElement>(null);
   const [leaving, setLeaving] = useState(false);
   const done = useRef(onDone);
   done.current = onDone;
+  const onLeaveRef = useRef(onLeave);
+  onLeaveRef.current = onLeave;
   const skip = useRef(() => {});
 
   useEffect(() => {
@@ -24,6 +26,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
       if (goneTimer) return;
       clearTimeout(leaveTimer);
       setLeaving(true);
+      onLeaveRef.current();
       goneTimer = window.setTimeout(() => done.current(), reduced ? 200 : FADE_MS);
     };
     const later = (ms: number) => {

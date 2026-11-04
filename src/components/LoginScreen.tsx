@@ -27,7 +27,7 @@ const BackArrow = (props: SVGProps<SVGSVGElement>) => (
 )
 
 const BrandMark = ({ className }: { className?: string }) => (
-  <img src="/move-logo.svg" alt="" draggable={false} className={clsx('select-none invert', className)} />
+  <img src="/move-logo.svg" alt="" draggable={false} className={clsx('select-none', className)} />
 )
 
 /** Staggered entrance; held until the splash screen has lifted so people actually see it. */
@@ -82,9 +82,9 @@ export function LoginScreen({ error }: { error: string | null }) {
   }, [])
 
   return (
-    <section className="relative min-h-svh overflow-hidden bg-white text-ink lg:grid lg:grid-cols-2">
-      <aside className="relative hidden h-full flex-col overflow-hidden border-e border-panel-border bg-white p-10 lg:flex">
-        <div aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent, transparent, #fff)' }} />
+    <section className="relative min-h-svh overflow-hidden bg-black text-ink lg:grid lg:grid-cols-2">
+      <aside className="relative hidden h-full flex-col overflow-hidden border-e border-panel-border bg-black p-10 lg:flex">
+        <div aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent, transparent, #000)' }} />
         <div className="absolute inset-0">
           <FloatingPaths position={1} />
           <FloatingPaths position={-1} />
@@ -95,12 +95,12 @@ export function LoginScreen({ error }: { error: string | null }) {
         </div>
 
         <figure className="enter relative z-10 mt-auto flex flex-col gap-3" style={enter(4, lifted)}>
-          <p className="max-w-md text-[clamp(1.75rem,2.6vw,2.4rem)] font-semibold leading-[1.1] tracking-[-0.04em]">
+          <p className="font-display max-w-md text-[clamp(1.75rem,2.6vw,2.4rem)] leading-[1.12] tracking-[-0.005em]">
             Trace it. Tune it.
             <br />
             Export a loop.
           </p>
-          <figcaption className="text-xs uppercase tracking-wide text-faint">Logo animator</figcaption>
+          <figcaption className="label">Logo animator</figcaption>
         </figure>
       </aside>
 
@@ -108,11 +108,11 @@ export function LoginScreen({ error }: { error: string | null }) {
         <div aria-hidden className="pointer-events-none absolute inset-0 z-0 opacity-60">
           <div
             className="absolute end-0 top-0 h-[80rem] w-[35rem] -translate-y-[22rem] rounded-full"
-            style={{ background: 'radial-gradient(68.54% 68.72% at 55.02% 31.46%, rgb(12 12 13 / 0.06) 0, rgb(12 12 13 / 0.02) 50%, rgb(12 12 13 / 0.01) 80%)' }}
+            style={{ background: 'radial-gradient(68.54% 68.72% at 55.02% 31.46%, rgb(244 242 239 / 0.07) 0, rgb(244 242 239 / 0.025) 50%, rgb(244 242 239 / 0.01) 80%)' }}
           />
           <div
             className="absolute end-0 top-0 h-[80rem] w-[15rem] translate-x-[5%] -translate-y-1/2 rounded-full"
-            style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgb(12 12 13 / 0.04) 0, rgb(12 12 13 / 0.01) 80%, transparent 100%)' }}
+            style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgb(244 242 239 / 0.05) 0, rgb(244 242 239 / 0.012) 80%, transparent 100%)' }}
           />
         </div>
 
@@ -127,7 +127,7 @@ export function LoginScreen({ error }: { error: string | null }) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <h1 style={enter(1, lifted)} className="enter text-[clamp(2.25rem,4vw,3rem)] font-semibold leading-none tracking-[-0.05em]">
+            <h1 style={enter(1, lifted)} className="enter font-display text-[clamp(2.25rem,4vw,3rem)] leading-[1.06] tracking-[-0.005em]">
               Sign in to Move.
             </h1>
             <p style={enter(2, lifted)} className="enter text-sm text-muted">
@@ -136,7 +136,7 @@ export function LoginScreen({ error }: { error: string | null }) {
           </div>
 
           {error && (
-            <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700" role="alert">
+            <p className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300" role="alert">
               {error}
             </p>
           )}
@@ -147,7 +147,7 @@ export function LoginScreen({ error }: { error: string | null }) {
               onClick={() => setRedirecting(true)}
               aria-disabled={redirecting}
               className={clsx(
-                'btn btn-primary flex h-11 w-full items-center justify-center gap-2 rounded-full text-sm font-semibold text-white',
+                'btn btn-primary flex h-11 w-full items-center justify-center gap-2 rounded-full text-sm font-medium',
                 redirecting && 'pointer-events-none opacity-60',
               )}
             >

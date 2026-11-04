@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { LoadingGate } from './LoadingGate'
+import { SiteFooter } from './SiteFooter'
 import { SmoothScroll } from './SmoothScroll'
 
 type DocEntry = {
@@ -236,7 +237,7 @@ function NavSearchBar({ onJump }: { onJump: (slug: string) => void }) {
 
       <div
         className={clsx(
-          'absolute right-0 top-[calc(100%+8px)] z-20 w-[22rem] max-w-[calc(100vw-2rem)] origin-top overflow-hidden rounded-2xl border border-panel-border bg-white shadow-[0_16px_40px_-16px_rgb(0_0_0/0.22)] transition-all duration-200',
+          'absolute right-0 top-[calc(100%+8px)] z-20 w-[22rem] max-w-[calc(100vw-2rem)] origin-top overflow-hidden rounded-md border border-panel-border bg-[#0a0a0a] shadow-[0_16px_40px_-16px_rgb(0_0_0/0.9)] transition-all duration-200',
           open ? 'max-h-80 scale-100 opacity-100' : 'pointer-events-none max-h-0 scale-95 opacity-0',
         )}
       >
@@ -272,10 +273,10 @@ function ChangelogEntry({ entry }: { entry: DocEntry }) {
   return (
     <div id={slugify(entry.label)} data-doc-section className="relative flex scroll-mt-24 flex-col gap-4 border-t border-panel-border py-10 md:flex-row md:gap-16">
       <div className="top-24 flex h-min w-40 shrink-0 items-center md:sticky">
-        <span className="surface-inset rounded-full px-3 py-1 text-[12px] font-medium text-muted">{entry.label}</span>
+        <span className="rounded-full border border-panel-border px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-faint">{entry.label}</span>
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
-        <h2 className="mb-3 text-[clamp(1.4rem,2.2vw,1.8rem)] font-semibold leading-tight tracking-[-0.035em] text-ink">{entry.title}</h2>
+        <h2 className="font-display mb-3 text-[clamp(1.4rem,2.2vw,1.8rem)] leading-tight tracking-[-0.01em] text-ink">{entry.title}</h2>
         {entry.description && <p className="max-w-xl text-[16px] leading-relaxed text-muted">{entry.description}</p>}
         {entry.items && (
           <ul className="mt-4 ml-5 max-w-xl space-y-2.5 text-[16px] leading-relaxed text-muted">
@@ -300,14 +301,14 @@ function DocsContent() {
     <div className="min-h-screen text-ink">
       <SmoothScroll />
 
-      <header className="sticky top-0 z-30 flex items-center gap-3 bg-gradient-to-b from-white from-55% to-white/0 px-4 py-4 sm:px-8">
+      <header className="sticky top-0 z-30 flex items-center gap-3 bg-gradient-to-b from-black from-55% to-black/0 px-4 py-4 sm:px-8">
         <a href="/" aria-label="Move home" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl">
-          <img src="/move-logo.svg" alt="" className="h-5 w-auto select-none invert" draggable={false} />
+          <img src="/move-logo.svg" alt="" className="h-5 w-auto select-none" draggable={false} />
         </a>
-        <button type="button" aria-hidden tabIndex={-1} className="btn btn-primary grid h-9 w-9 shrink-0 place-items-center rounded-full text-white">
+        <button type="button" aria-hidden tabIndex={-1} className="btn btn-primary grid h-9 w-9 shrink-0 place-items-center rounded-full">
           {HAMBURGER_ICON}
         </button>
-        <span className="hidden shrink-0 text-sm font-semibold tracking-tight sm:inline">Move Docs</span>
+        <span className="font-display hidden shrink-0 text-[17px] sm:inline">Move Docs</span>
 
         <div className="ml-auto flex items-center gap-3">
           <NavSearchBar onJump={jumpTo} />
@@ -323,9 +324,9 @@ function DocsContent() {
       </header>
 
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-8">
-        <p className="text-[15px] text-faint">Docs</p>
-        <h1 className="mt-2.5 text-[clamp(2.25rem,5vw,4rem)] font-semibold leading-[0.98] tracking-[-0.05em]">How to use Move.</h1>
-        <p className="mb-12 mt-4 max-w-xl text-[17px] leading-relaxed text-muted">From a first upload to advanced setting combos.</p>
+        <p className="label">Docs</p>
+        <h1 className="font-display mt-3 text-[clamp(2.25rem,5vw,4rem)] leading-[1.06] tracking-[-0.005em]">How to use Move.</h1>
+        <p className="mb-12 mt-4 max-w-xl text-[15px] leading-relaxed text-muted">From a first upload to advanced setting combos.</p>
 
         <div className="border-b border-panel-border">
           {ENTRIES.map((entry) => (
@@ -333,6 +334,8 @@ function DocsContent() {
           ))}
         </div>
       </div>
+
+      <SiteFooter />
     </div>
   )
 }

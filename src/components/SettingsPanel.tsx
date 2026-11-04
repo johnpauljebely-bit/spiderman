@@ -56,7 +56,7 @@ function ReverseToggle({ reversed, onChange }: { reversed: boolean; onChange: (v
       type="button"
       onClick={() => onChange(!reversed)}
       className={`rounded-md border px-2 py-1 text-[11px] font-medium transition-colors ${
-        reversed ? 'border-accent bg-accent text-white' : 'border-panel-border text-muted hover:text-ink'
+        reversed ? 'border-accent bg-accent text-black' : 'border-panel-border text-muted hover:text-ink'
       }`}
     >
       Reverse
@@ -171,12 +171,12 @@ function SimpleControls({
                 key={preset.id}
                 type="button"
                 onClick={() => onChange({ ...preset.look, speed: preset.speed })}
-                className={`rounded-xl px-3 py-2.5 text-left transition-colors ${
-                  active ? 'btn btn-primary text-white' : 'surface-inset text-ink hover:border-faint'
+                className={`rounded-md px-3 py-2.5 text-left transition-colors ${
+                  active ? 'btn btn-primary' : 'surface-inset text-ink hover:border-faint'
                 }`}
               >
-                <span className="block text-xs font-semibold">{preset.label}</span>
-                <span className={`mt-0.5 block text-[10px] leading-snug ${active ? 'text-white/80' : 'text-muted'}`}>{preset.hint}</span>
+                <span className="block text-xs font-medium">{preset.label}</span>
+                <span className={`mt-0.5 block text-[10px] leading-snug ${active ? 'text-black/60' : 'text-muted'}`}>{preset.hint}</span>
               </button>
             )
           })}

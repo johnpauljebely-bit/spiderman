@@ -5,7 +5,7 @@ import { SplashContext } from './splash-context'
 
 const TRANSITION_MS = 700
 
-/** The liquid-glass logo intro (black logo on the light plate, like the Andre site's), shown for a fixed
+/** The liquid-glass logo intro (the landing page's: black glass logo on the grey plate), shown for a fixed
  * duration on direct visits (not click-throughs), before either the login screen or the app itself —
  * doesn't care which one ends up underneath. Fades out while the real screen blurs into focus, rather than just popping in. */
 export function LoadingGate({ children, durationMs = 5000 }: { children: ReactNode; durationMs?: number }) {

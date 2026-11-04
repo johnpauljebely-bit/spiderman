@@ -63,7 +63,7 @@ export function BackgroundPanel({
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="w-full rounded-xl border border-dashed border-panel-border bg-panel-strong py-4 text-center text-xs text-muted transition-colors hover:border-ink hover:text-ink"
+            className="w-full rounded-md border border-dashed border-panel-border bg-panel-strong py-4 text-center text-xs text-muted transition-colors hover:border-ink hover:text-ink"
           >
             {background.image ? 'Change background image' : 'Choose background image'}
           </button>
