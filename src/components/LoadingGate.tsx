@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { LiquidGlassLogo } from '../landing/liquid-glass-logo'
 import { arrivedFromSite } from '../lib/arrival'
+import { to } from '../lib/paths'
 import { SplashContext } from './splash-context'
 
 const TRANSITION_MS = 700
@@ -47,7 +48,7 @@ export function LoadingGate({ children, durationMs = 5000 }: { children: ReactNo
             pointerEvents: revealing ? 'none' : 'auto',
           }}
         >
-          <LiquidGlassLogo logo="/move-logo.svg" ending="logo" theme="light" style={{ height: 480, maxHeight: '70svh' }} aria-label="Move" />
+          <LiquidGlassLogo logo={to('/move-logo.svg')} ending="logo" theme="light" style={{ height: 480, maxHeight: '70svh' }} aria-label="Move" />
         </div>
       )}
     </SplashContext.Provider>

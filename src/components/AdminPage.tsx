@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
+import { to } from '../lib/paths'
 
 // /admin: Move's analytics, behind one password (api/admin.mjs). Nothing here is linked from the public pages.
 
@@ -74,8 +75,8 @@ export function AdminPage() {
   return (
     <main className="mx-auto max-w-5xl px-4 pb-24 pt-6 sm:px-8">
       <header className="flex flex-wrap items-center gap-3 pb-8">
-        <a href="/" aria-label="Move home" className="grid h-10 w-10 shrink-0 place-items-center">
-          <img src="/move-logo.svg" alt="" className="h-5 w-auto select-none" draggable={false} />
+        <a href={to('/')} aria-label="Move home" className="grid h-10 w-10 shrink-0 place-items-center">
+          <img src={to('/move-logo.svg')} alt="" className="h-5 w-auto select-none" draggable={false} />
         </a>
         <span className="font-display text-[17px]">Admin</span>
         <div className="ml-auto flex items-center gap-3">
@@ -129,7 +130,7 @@ function Login({ onDone }: { onDone: () => void }) {
   return (
     <main className="grid min-h-screen place-items-center px-4">
       <form onSubmit={(e) => void submit(e)} className="surface w-full max-w-sm rounded-md p-7">
-        <img src="/move-logo.svg" alt="Move" className="h-5 w-auto select-none" draggable={false} />
+        <img src={to('/move-logo.svg')} alt="Move" className="h-5 w-auto select-none" draggable={false} />
         <h1 className="font-display mt-6 text-[26px]">Admin</h1>
         <label htmlFor="pw" className="label mt-6 block">
           Password

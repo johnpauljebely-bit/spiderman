@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vance Creative Enterprises</title>
+<meta name="description" content="Vance Creative Enterprises — a one-person design studio in Vancouver making logos, brand identities and graphics for Discord and Roblox communities.">
+<meta name="theme-color" content="#2b5fb0">
+<!-- Discord login for the ANI PANEL (Move, under /anipanel/) comes back to the site root with the token in the hash: pass it on -->
+<script>if (/access_token/.test(location.hash)) location.replace('/anipanel/app' + location.hash)</script>
+<link rel="icon" href="assets/brand/favicon.png">
+<link rel="preload" href="assets/fonts/instrument-serif-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/instrument-serif-400-italic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/media/poster.jpg" as="image">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body class="at-home">
+<main id="app">
+  <section class="scene" aria-label="Vance Creative Enterprises" tabindex="-1">
+    <canvas class="scene-sky" width="48" height="96" aria-hidden="true"></canvas>
+    <video class="scene-video" id="clip" muted playsinline preload="auto" disablepictureinpicture
+           poster="assets/media/poster.jpg" aria-hidden="true"></video>
+    <video class="scene-video is-hidden" id="clipOn" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
+    <div class="scene-tint" aria-hidden="true"></div>
+
+    <div class="hero">
+      <h1 class="headline">
+        <span class="line" style="--k:0"><span>Design that</span></span>
+        <span class="line it" style="--k:1"><span>stays on.</span></span>
+      </h1>
+      <p class="lede"><span class="line" style="--k:2"><span>Vance Creative Enterprises is a one-person design studio in Vancouver, making logos, brand identities and graphics for Discord and Roblox communities.</span></span></p>
+    </div>
+
+    <canvas class="scene-fx" aria-hidden="true"></canvas>
+    <p class="sr-only" aria-live="polite" id="power-status"></p>
+  </section>
+
+  <!-- Inner pages scroll over the scene, Jet PDP style: one scroll container each, swapped behind a wipe -->
+  <div class="stage" id="stage">
+
+    <div class="page" data-page="work" tabindex="-1">
+      <header class="intro-head wrap">
+        <p class="kicker rv">Selected work</p>
+        <h1><span class="t" data-t>THE</span><span class="t it" data-t>WORK</span></h1>
+        <p class="lead rv">Logos, clothing and banners for roleplay and Discord communities, plus a pile of everything else. Pick one to see the whole set.</p>
+      </header>
+      <h2 class="sr-only">Projects</h2>
+      <section class="work-grid wrap" id="workGrid" aria-label="Projects"></section>
+      <a class="next" href="#/about"><small>Next</small><span>ABOUT</span></a>
+      <div class="foot-slot"></div>
+    </div>
+
+    <div class="page dark" data-page="project" tabindex="-1">
+      <header class="page-head pj-head">
+        <div class="page-title">
+          <div class="pj-bar">
+            <a class="back" href="#/work">&larr; All work</a>
+            <span class="pj-count" id="pjCount"></span>
+          </div>
+          <div class="pj-main">
+            <h1 id="pjTitle"></h1>
+            <p class="pj-desc" id="pjDesc"></p>
+            <dl class="spec" id="pjSpec"></dl>
+            <a class="cta" href="https://discord.gg/r8BqJbk7ga" target="_blank" rel="noreferrer"><span id="pjCta">Order on Discord</span> <span aria-hidden="true">&nearr;</span></a>
+          </div>
+        </div>
+        <div class="page-img" id="pjCover"></div>
+      </header>
+      <section class="gallery wrap" id="pjGallery" aria-label="Gallery"></section>
+      <a class="next" id="pjNext" href="#/work"><small>Next project</small><span></span></a>
+      <div class="foot-slot"></div>
+    </div>
+
+    <div class="page" data-page="about" tabindex="-1">
+      <header class="page-head">
+        <div class="page-title">
+          <p class="kicker">About</p>
+          <h1><span class="t" data-t>HI, I&rsquo;M</span><span class="t it" data-t>VANCE</span></h1>
+        </div>
+        <div class="page-img"><img src="assets/illustrations/coffee.webp" alt="Illustration of a cup of coffee on an open magazine, on a red tiled table"></div>
+      </header>
+      <section class="intro wrap">
+        <p class="lead rv">A solo designer helping brands, creators and communities get logos, branding and visuals that don&rsquo;t feel like a template.</p>
+        <div class="two-col rv">
+          <p>Based in Vancouver, BC, and working with clients everywhere. Most of what I make is for Discord servers, ERLC servers and companies: identities that have to hold up across a whole community, not just one banner.</p>
+          <p>Every project is handled start to finish by one person, so the person you brief is the person who designs it, revises it and hands over the final files.</p>
+        </div>
+      </section>
+      <section class="pair wrap" aria-label="Illustrations">
+        <img class="rv" src="assets/illustrations/street.webp" alt="Illustration of a whitewashed street with orange flowers, a blue door and a black cat" width="564" height="1006" loading="lazy">
+        <img class="rv" src="assets/illustrations/road.webp" alt="Illustration of a person on a roadside looking at a white modern building under red leaves" width="736" height="1308" loading="lazy">
+      </section>
+      <section class="wrap disciplines">
+        <div class="sec-head rv"><h2><span class="t" data-t>WHAT I</span><span class="t it" data-t>MAKE</span></h2></div>
+        <ol class="rows" id="aboutRows"></ol>
+      </section>
+      <a class="next" href="#/services"><small>Next</small><span>SERVICES</span></a>
+      <div class="foot-slot"></div>
+    </div>
+
+    <div class="page" data-page="services" tabindex="-1">
+      <header class="page-head">
+        <div class="page-title">
+          <p class="kicker">Commissions</p>
+          <h1><span class="t" data-t>HOW TO</span><span class="t it" data-t>ORDER</span></h1>
+        </div>
+        <div class="page-img"><img src="assets/illustrations/luggage.webp" alt="Illustration of two packed suitcases, red and blue, with a sun hat and a tote bag"></div>
+      </header>
+      <section class="intro wrap">
+        <p class="lead rv">Logos, full brand identities, Roblox clothing, liveries and Discord graphics, made to order. Here&rsquo;s how a commission runs.</p>
+      </section>
+      <section class="band">
+        <div class="band-copy wrap">
+          <h2 class="kicker rv">The process</h2>
+          <ol class="steps">
+            <li class="rv"><span class="num">01</span><h3>Inquire</h3><p>Send a DM on Discord with what you need.</p></li>
+            <li class="rv"><span class="num">02</span><h3>Scope</h3><p>We agree on deliverables, timeline and price.</p></li>
+            <li class="rv"><span class="num">03</span><h3>Deposit</h3><p>50% upfront to lock in the slot.</p></li>
+            <li class="rv"><span class="num">04</span><h3>Drafts</h3><p>You get rounds of revisions.</p></li>
+            <li class="rv"><span class="num">05</span><h3>Delivery</h3><p>Final files, handed off.</p></li>
+          </ol>
+          <ul class="step-art" aria-label="Illustrations of the process">
+            <li class="rv"><img src="assets/illustrations/traffic-light.webp" alt="Illustration of a traffic light on a blue background" width="735" height="980" loading="lazy" style="object-position: 50% 0"><span><span class="num">01</span> Inquire</span></li>
+            <li class="rv"><img src="assets/illustrations/card.webp" alt="Illustration of a hand in a suit sleeve holding out a bank card" width="736" height="736" loading="lazy"><span><span class="num">03</span> Deposit</span></li>
+            <li class="rv"><img src="assets/illustrations/box.webp" alt="Illustration of an opened cardboard box with items floating out of it" width="736" height="1318" loading="lazy" style="object-position: 50% 41%"><span><span class="num">05</span> Delivery</span></li>
+          </ul>
+        </div>
+      </section>
+      <section class="wrap faq">
+        <div class="sec-head rv"><h2><span class="t" data-t>GOOD TO</span><span class="t it" data-t>KNOW</span></h2></div>
+        <div class="faq-list rv">
+          <details open><summary>How long does a project take?<i aria-hidden="true"></i></summary><p>Depends on scope. Usually one to three weeks.</p></details>
+          <details><summary>Do you take rush orders?<i aria-hidden="true"></i></summary><p>Sometimes, for an added fee.</p></details>
+          <details><summary>What&rsquo;s included in the price?<i aria-hidden="true"></i></summary><p>Final files plus one round of revisions, unless stated otherwise.</p></details>
+        </div>
+        <a class="arrow rv" href="#/contact">Start a commission &rarr;</a>
+      </section>
+      <a class="next" href="#/contact"><small>Next</small><span>CONTACT</span></a>
+      <div class="foot-slot"></div>
+    </div>
+
+    <div class="page dark" data-page="contact" tabindex="-1">
+      <header class="page-head contact-head">
+        <div class="page-title">
+          <p class="kicker">Contact</p>
+          <h1><span class="t" data-t>SAY</span><span class="t it" data-t>HELLO</span></h1>
+          <p class="lead rv">The quickest way to start is a DM on Discord with what you need, a rough timeline and any references. The server also has the full archive of work.</p>
+          <a class="cta rv" href="https://discord.gg/r8BqJbk7ga" target="_blank" rel="noreferrer">Join the Discord <span aria-hidden="true">&nearr;</span></a>
+          <p class="cta-note rv">discord.gg/r8BqJbk7ga</p>
+        </div>
+        <div class="page-img"><img src="assets/illustrations/train.webp" alt="Illustration of a red train crossing an arched bridge beside a tall tower at night"></div>
+      </header>
+      <a class="next" href="#/work"><small>Back to</small><span>THE WORK</span></a>
+      <div class="foot-slot"></div>
+    </div>
+  </div>
+
+  <!-- The site footer (from the Move site), moved into whichever inner page is showing -->
+  <footer class="site-foot" id="siteFoot">
+    <div class="foot-grid">
+      <div>
+        <p class="foot-blurb">Logos, brand identities and graphics for Discord and Roblox communities.</p>
+        <p class="foot-status"><span class="foot-dot" aria-hidden="true"></span>Taking commissions. DM on Discord to start</p>
+      </div>
+      <div class="foot-col">
+        <p>Work</p>
+        <ul id="footWork"></ul>
+      </div>
+      <div class="foot-col">
+        <p>Studio</p>
+        <ul>
+          <li><a href="#/about">About</a></li>
+          <li><a href="#/services">Services</a></li>
+          <li><a href="#/contact">Contact</a></li>
+          <li><a href="https://discord.gg/r8BqJbk7ga" target="_blank" rel="noreferrer">Discord</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="foot-copy">&copy; 2026 Vance Creative Enterprises</p>
+    <div class="halftone" id="halftone" aria-hidden="true"><canvas></canvas></div>
+  </footer>
+
+  <button class="power" type="button" aria-pressed="false" aria-label="Vance Creative Enterprises. Power button: switch the scene off">
+    <img class="power-glow" src="assets/brand/wordmark.png" alt="" width="2719" height="680" draggable="false" aria-hidden="true">
+    <img class="power-mark" src="assets/brand/wordmark.png" alt="" width="2719" height="680" draggable="false">
+    <i class="brand-ink" aria-hidden="true"></i>
+    <span class="power-halo" aria-hidden="true"></span>
+  </button>
+
+  <!-- First visit only: a hand-drawn arrow pointing at the logo (site.js) -->
+  <div class="hint" id="hint" aria-hidden="true" hidden>
+    <span class="hint-arrow"><img src="assets/brand/hint-arrow.webp" alt="" width="400" height="400" draggable="false"></span>
+    <p class="hint-text"><span class="hint-verb">Click</span> me<br><em>see what happens</em></p>
+  </div>
+
+  <aside class="menu" id="menu" aria-hidden="true" inert>
+    <i class="sheet s-dark"></i><i class="sheet s-blue"></i>
+    <div class="sheet s-white">
+      <ul class="links">
+        <li><a href="#/"><span class="m" style="--k:0"><i>HOME</i></span><sup class="n m" style="--k:1"><i>01</i></sup></a></li>
+        <li><a href="#/work"><span class="m" style="--k:2"><i>WORK</i></span><sup class="n m" style="--k:3"><i>02</i></sup></a></li>
+        <li><a href="#/about"><span class="m" style="--k:4"><i>ABOUT</i></span><sup class="n m" style="--k:5"><i>03</i></sup></a></li>
+        <li><a href="#/services"><span class="m" style="--k:6"><i>SERVICES</i></span><sup class="n m" style="--k:7"><i>04</i></sup></a></li>
+        <li><a href="#/contact"><span class="m" style="--k:8"><i>CONTACT</i></span><sup class="n m" style="--k:9"><i>05</i></sup></a></li>
+        <!-- The logo animator (Move): /anipanel forwards to wherever it is hosted, see dev.mjs and vercel.json -->
+        <li><a href="/anipanel"><span class="m" style="--k:10"><i>ANI PANEL</i></span><sup class="n m" style="--k:11"><i>06</i></sup></a></li>
+      </ul>
+      <div class="socials">
+        <span class="m soc-label" style="--k:12"><i>SOCIALS</i></span>
+        <div class="soc-row">
+          <a href="https://discord.gg/r8BqJbk7ga" target="_blank" rel="noreferrer" class="m" style="--k:13"><i>DISCORD</i></a>
+          <a href="#" class="m" style="--k:14" data-noop><i>INSTAGRAM</i></a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <button class="btn-menu" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">
+    <span class="lab"><span class="a">MENU</span><em class="b">CLOSE</em></span><i class="cross" aria-hidden="true"></i>
+  </button>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+    <button class="lb-btn lb-close" type="button" aria-label="Close">Close</button>
+    <button class="lb-btn lb-prev" type="button" aria-label="Previous image">&larr;</button>
+    <button class="lb-btn lb-next" type="button" aria-label="Next image">&rarr;</button>
+    <p class="lb-count" id="lbCount"></p>
+  </div>
+
+  <div class="wipe" id="wipe" aria-hidden="true"><i></i><i></i><i></i></div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/scene.js"></script>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

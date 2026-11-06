@@ -1,3 +1,5 @@
+import { to } from '@/lib/paths'
+
 // The 21 frames on the sphere: single moments from Move's own logo animation, rendered by the animator
 // itself in different looks, colors and crops, plus screenshots of the tool, docs and sign-in. Files live
 // in /public/archive as <id>_min.webp (thumbnail) and <id>.webp (full size).
@@ -13,10 +15,10 @@ export interface Card {
   tall?: boolean
 }
 
-export const BASE = '/archive/'
+export const BASE = to('/archive/')
 export const thumb = (id: string) => `${BASE}${id}_min.webp`
 export const full = (id: string) => `${BASE}${id}.webp`
-export const AVATAR = '/favicon-512.png'
+export const AVATAR = to('/favicon-512.png')
 
 export const CARDS: Card[] = [
   {

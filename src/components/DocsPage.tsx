@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { LoadingGate } from './LoadingGate'
 import { SiteFooter } from './SiteFooter'
+import { to } from '../lib/paths'
 import { SmoothScroll } from './SmoothScroll'
 
 type DocEntry = {
@@ -302,8 +303,8 @@ function DocsContent() {
       <SmoothScroll />
 
       <header className="sticky top-0 z-30 flex items-center gap-3 bg-gradient-to-b from-black from-55% to-black/0 px-4 py-4 sm:px-8">
-        <a href="/" aria-label="Move home" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl">
-          <img src="/move-logo.svg" alt="" className="h-5 w-auto select-none" draggable={false} />
+        <a href={to('/')} aria-label="Move home" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl">
+          <img src={to('/move-logo.svg')} alt="" className="h-5 w-auto select-none" draggable={false} />
         </a>
         <button type="button" aria-hidden tabIndex={-1} className="btn btn-primary grid h-9 w-9 shrink-0 place-items-center rounded-full">
           {HAMBURGER_ICON}
@@ -313,10 +314,10 @@ function DocsContent() {
         <div className="ml-auto flex items-center gap-3">
           <NavSearchBar onJump={jumpTo} />
           <nav className="app-nav-pill" aria-label="Main">
-            <a href="/" className="app-nav-link hidden sm:inline">
+            <a href={to('/')} className="app-nav-link hidden sm:inline">
               Home
             </a>
-            <a href="/app" className="btn btn-primary whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium">
+            <a href={to('/app')} className="btn btn-primary whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium">
               Open Move
             </a>
           </nav>

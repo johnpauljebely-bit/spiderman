@@ -17,6 +17,8 @@ import { AuthGate } from './components/AuthGate'
 import { LoadingGate } from './components/LoadingGate'
 import { SmoothScroll } from './components/SmoothScroll'
 import type { DiscordUser } from './lib/discordAuth'
+import { to } from './lib/paths'
+import { VCE_URL } from './lib/vce'
 
 /** The tool itself: sign in with Discord, then trace, animate and export. Routing lives in main.tsx. */
 export default function App() {
@@ -168,11 +170,14 @@ function AppContent({ user, onLogout }: { user: DiscordUser; onLogout: () => voi
     <div className="min-h-screen px-6 pb-16 text-ink">
       <div className="mx-auto max-w-6xl">
         <header className="sticky top-0 z-40 -mx-6 flex items-center justify-between gap-4 bg-gradient-to-b from-black from-55% to-black/0 px-6 py-4">
-          <a href="/" aria-label="Move home" className="grid h-10 w-10 place-items-center rounded-xl">
-            <img src="/move-logo.svg" alt="" className="h-5 w-auto select-none" draggable={false} />
+          <a href={to('/')} aria-label="Move home" className="grid h-10 w-10 place-items-center rounded-xl">
+            <img src={to('/move-logo.svg')} alt="" className="h-5 w-auto select-none" draggable={false} />
           </a>
           <nav className="app-nav-pill" aria-label="Main">
-            <a href="/docs" target="_blank" rel="noopener" className="app-nav-link">
+            <a href={VCE_URL} className="app-nav-link">
+              Back to VCE
+            </a>
+            <a href={to('/docs')} target="_blank" rel="noopener" className="app-nav-link">
               Docs
             </a>
             <span className="flex items-center gap-2 px-2.5">

@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { motion, useReducedMotion } from 'motion/react'
 import { useEffect, useState, type CSSProperties, type SVGProps } from 'react'
 import { getDiscordAuthorizeUrl } from '../lib/discordAuth'
+import { to } from '../lib/paths'
 import { useSplashLifted } from './splash-context'
 
 // Layout and motion follow the "Login 3" block from Hirael (MIT, Mohammad Shehadeh): a split screen with
@@ -27,7 +28,7 @@ const BackArrow = (props: SVGProps<SVGSVGElement>) => (
 )
 
 const BrandMark = ({ className }: { className?: string }) => (
-  <img src="/move-logo.svg" alt="" draggable={false} className={clsx('select-none', className)} />
+  <img src={to('/move-logo.svg')} alt="" draggable={false} className={clsx('select-none', className)} />
 )
 
 /** Staggered entrance; held until the splash screen has lifted so people actually see it. */
@@ -116,7 +117,7 @@ export function LoginScreen({ error }: { error: string | null }) {
           />
         </div>
 
-        <a href="/" className="enter app-nav-link absolute start-5 top-7 z-10 flex items-center gap-1.5" style={enter(0, lifted)}>
+        <a href={to('/')} className="enter app-nav-link absolute start-5 top-7 z-10 flex items-center gap-1.5" style={enter(0, lifted)}>
           <BackArrow className="size-4" />
           Home
         </a>
@@ -159,8 +160,8 @@ export function LoginScreen({ error }: { error: string | null }) {
             </span>
           </div>
 
-          <p style={enter(4, lifted)} className="enter text-xs text-faint">
-            Access is limited to approved Discord accounts.
+          <p style={enter(4, lifted)} className="enter text-xs text-muted">
+            Access is paid. You won&apos;t get in unless you DM me on Discord and pay first.
           </p>
         </div>
       </div>

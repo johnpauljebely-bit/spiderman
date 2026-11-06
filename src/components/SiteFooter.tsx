@@ -1,18 +1,19 @@
 import { HalftoneWordmark } from '../landing/halftone-wordmark'
+import { to } from '../lib/paths'
 
 type Link = { name: string; href: string }
 
 const MOVE: Link[] = [
-  { name: 'Trace', href: '/docs#logo' },
-  { name: 'Reveal', href: '/docs#animation' },
-  { name: 'Looks', href: '/docs#simple-mode' },
-  { name: 'Sequence', href: '/docs#sequence' },
+  { name: 'Trace', href: to('/docs#logo') },
+  { name: 'Reveal', href: to('/docs#animation') },
+  { name: 'Looks', href: to('/docs#simple-mode') },
+  { name: 'Sequence', href: to('/docs#sequence') },
 ]
 const MORE: Link[] = [
-  { name: 'Export', href: '/docs#export' },
-  { name: 'Docs', href: '/docs' },
-  { name: 'Legal', href: '/legal' },
-  { name: 'Open Move', href: '/app' },
+  { name: 'Export', href: to('/docs#export') },
+  { name: 'Docs', href: to('/docs') },
+  { name: 'Legal', href: to('/legal') },
+  { name: 'Open Move', href: to('/app') },
 ]
 
 function FooterColumn({ title, items }: { title: string; items: readonly Link[] }) {

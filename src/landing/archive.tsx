@@ -1,5 +1,7 @@
 import { createRoot, type Root } from 'react-dom/client'
 import TextRoll from '@/components/ui/text-roll'
+import { to } from '@/lib/paths'
+import { VCE_URL } from '@/lib/vce'
 import { AVATAR, CARDS, full, thumb } from './cards'
 
 // The landing page's behavior, in plain DOM code: a Fibonacci sphere of cards that you drag to rotate,
@@ -21,7 +23,10 @@ const TEMPLATE = `
 </div>
 <div class="vig"></div>
 <header class="chrome">
-  <div class="wordmark"><img src="/move-logo.svg" alt="Move" draggable="false" /></div>
+  <div class="brand">
+    <div class="wordmark"><img src="${to('/move-logo.svg')}" alt="Move" draggable="false" /></div>
+    <a class="back-vce" href="${VCE_URL}"><span aria-hidden="true">&larr;</span> Back to VCE</a>
+  </div>
   <button id="menuBtn" class="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
     <span class="menu-label">Menu</span>
     <span class="bars"><i></i><i></i></span>
@@ -30,16 +35,17 @@ const TEMPLATE = `
 <div class="bio chrome">
   <div class="who"><img id="avatar" alt="Move" /><b>Move</b></div>
   <p>Move turns any logo into a looping animation. Trace it, tune the reveal and export a GIF, all in your browser. Nothing is ever uploaded.</p>
-  <a class="open" href="/app">Open Move</a>
+  <a class="open" href="${to('/app')}">Open Move</a>
 </div>
 <div class="colophon chrome">Logo Animator 2026</div>
 <div class="cue chrome"><s></s>Drag to rotate</div>
 <div id="menu">
   <nav>
-    <a href="/docs">Docs</a>
-    <a href="/app">Open Move</a>
+    <a href="${to('/docs')}">Docs</a>
+    <a href="${to('/app')}">Open Move</a>
     <a href="#" data-close-menu>Back to the Sphere</a>
-    <a href="/legal">Legal</a>
+    <a href="${to('/legal')}">Legal</a>
+    <a href="${VCE_URL}">Back to VCE</a>
   </nav>
   <div class="addr">Runs in your browser<br />Your logo never leaves your device</div>
 </div>

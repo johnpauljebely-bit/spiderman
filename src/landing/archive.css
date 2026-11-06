@@ -246,10 +246,30 @@ header.chrome {
 header.chrome > * {
   pointer-events: auto;
 }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 1.6vw, 22px);
+}
 .wordmark {
   display: block;
   line-height: 1;
   padding: 6px 0;
+}
+/* Back to the VCE portfolio this site is linked from (src/lib/vce.ts); white, so it inverts with the header */
+.back-vce {
+  font-size: clamp(12px, 1.25vw, 15px);
+  letter-spacing: 0.01em;
+  color: #fff;
+  opacity: 0.72;
+  transition: opacity 0.35s;
+}
+.back-vce:hover {
+  opacity: 1;
+}
+body.menu-open .back-vce {
+  opacity: 0;
+  pointer-events: none;
 }
 .wordmark img {
   height: clamp(20px, 2vw, 28px);

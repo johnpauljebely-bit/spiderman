@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { hwfRadius, hwfStep, hwfWarmth } from './halftone-physics';
+import { to } from '@/lib/paths';
 
 // The footer's giant "Move", printed as halftone dots with the logo standing in for the M. It borrows the
 // Halftone Wordmark Footer's mechanics (dots sized by letter coverage, pushed aside by the pointer on springs,
 // a shock ring on click) but keeps this site's look: faint white dots, fading out towards the bottom.
-const MARK = '/move-logo.svg';
+const MARK = to('/move-logo.svg');
 const MARK_ASPECT = 920 / 581;
 const FONT = 'Inter, "Helvetica Neue", Arial, sans-serif';
 const GAP = 5; // px between dot centres

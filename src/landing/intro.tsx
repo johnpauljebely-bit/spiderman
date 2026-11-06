@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { LiquidGlassLogo } from './liquid-glass-logo';
+import { to } from '@/lib/paths';
 
-const LOGO = '/move-logo.svg';
+const LOGO = to('/move-logo.svg');
 // The glass settles onto the logo at 1.8 s (the component's logo ending); let the finished logo sit for a second, then reveal the page.
 const SETTLE_MS = 1800;
 const HOLD_MS = 1000;

@@ -1,8 +1,19 @@
 {
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "redirects": [
+    { "source": "/app", "destination": "/anipanel/app", "permanent": false },
+    { "source": "/docs", "destination": "/anipanel/docs", "permanent": false },
+    { "source": "/legal", "destination": "/anipanel/legal", "permanent": false },
+    { "source": "/admin", "destination": "/anipanel/admin", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/anipanel", "destination": "/anipanel/index.html" },
+    { "source": "/anipanel/((?!assets/).*)", "destination": "/anipanel/index.html" }
+  ],
   "headers": [
     {
-      "source": "/admin",
+      "source": "/anipanel/admin",
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex" },
         { "key": "X-Frame-Options", "value": "DENY" }
