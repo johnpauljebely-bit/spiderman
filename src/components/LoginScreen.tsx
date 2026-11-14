@@ -161,7 +161,11 @@ export function LoginScreen({ error }: { error: string | null }) {
           </div>
 
           <p style={enter(4, lifted)} className="enter text-xs text-muted">
-            Access is paid. You won&apos;t get in unless you DM me on Discord and pay first.
+            Access is paid. You won&apos;t get in unless you{' '}
+            <a href="https://discord.com/users/1349737404449296414" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-ink">
+              DM me on Discord
+            </a>{' '}
+            and pay first.
           </p>
         </div>
       </div>

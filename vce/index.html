@@ -6,8 +6,10 @@
 <title>Vance Creative Enterprises</title>
 <meta name="description" content="Vance Creative Enterprises — a one-person design studio in Vancouver making logos, brand identities and graphics for Discord and Roblox communities.">
 <meta name="theme-color" content="#2b5fb0">
-<!-- Discord login for the ANI PANEL (Move, under /anipanel/) comes back to the site root with the token in the hash: pass it on -->
-<script>if (/access_token/.test(location.hash)) location.replace('/anipanel/app' + location.hash)</script>
+<!-- Discord login for the ANI PANEL (Move, under /anipanel/) comes back to the site root with the token in the hash: pass it on.
+     /legal serves this page too (dev.mjs, vercel.json) and opens the Legal page. -->
+<script>if (/access_token/.test(location.hash)) location.replace('/anipanel/app' + location.hash)
+else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</script>
 <link rel="icon" href="assets/brand/favicon.png">
 <link rel="preload" href="assets/fonts/instrument-serif-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/instrument-serif-400-italic.woff2" as="font" type="font/woff2" crossorigin>
@@ -140,6 +142,44 @@
       <div class="foot-slot"></div>
     </div>
 
+    <div class="page" data-page="legal" tabindex="-1">
+      <header class="intro-head wrap">
+        <p class="kicker rv">Legal</p>
+        <h1><span class="t" data-t>THE FINE</span><span class="t it" data-t>PRINT</span></h1>
+        <p class="lead rv">The rules for ordering, and how this website handles your information. Last updated November 14, 2026.</p>
+      </header>
+      <section class="wrap legal">
+        <div class="sec-head rv"><h2><span class="t" data-t>ORDER</span><span class="t it" data-t>POLICIES</span></h2><p>By placing an order you agree to everything below.</p></div>
+        <ol class="policy rv" aria-label="Order policies">
+          <li><span class="num">01</span><div><h3>Payment upfront</h3><p>Payment is due upfront, before any work starts. The amount due (in full or a deposit) is agreed when we scope the order. No payment, no slot: nothing is started, reserved or sketched until it’s paid.</p></div></li>
+          <li><span class="num">02</span><div><h3>Robux only, via gamepass or trusted friend</h3><p>I get paid in Robux, either through a gamepass I set up for your order or through a trusted friend transfer where that applies. I’ll tell you which one when we agree on scope. Payment through any other route isn’t valid, and I’m not responsible for Robux sent anywhere other than what I send you.</p></div></li>
+          <li><span class="num">03</span><div><h3>No chargebacks, no disputes</h3><p>Once a payment is made and work has started, it’s final. Chargebacks, reversals and payment disputes after the fact aren’t accepted. If you pull a payment back, the order is cancelled, delivery stops, and any work already made stays mine.</p></div></li>
+          <li><span class="num">04</span><div><h3>No middleman</h3><p>Orders are between you and me, directly. I don’t work through brokers, resellers or third parties handling payment or relaying messages for you. If someone else is paying for you, they deal with me directly.</p></div></li>
+          <li><span class="num">05</span><div><h3>No bullshit</h3><p>Be straight about what you want and I’ll be straight about what it costs and how long it takes. Scope, price and timeline are agreed before payment, and that agreement is what I deliver. No endless scope creep, no moving goalposts, no ghosting.</p></div></li>
+          <li><span class="num">06</span><div><h3>Revisions</h3><p>Revisions are limited to what we agree on in scope. Changes outside that scope are a new order and priced separately.</p></div></li>
+          <li><span class="num">07</span><div><h3>Refunds</h3><p>Because work is custom and time is reserved for you, payments are non-refundable once work has started. If I can’t deliver what we agreed on, I’ll make it right or refund what I can’t deliver. That’s my call to make.</p></div></li>
+          <li><span class="num">08</span><div><h3>Rights reserved</h3><p>I reserve all rights to everything I make, including drafts, concepts and unused work, and to my process, files and this website. A finished, paid order lets you use the final delivered files for the purpose we agreed on; it doesn’t transfer ownership of the underlying files or concepts. I may show finished work in this portfolio and on social media unless we agree otherwise before the order starts. You can’t resell, redistribute or claim authorship of my work, and I can refuse or cancel any order for any reason.</p></div></li>
+        </ol>
+      </section>
+      <section class="wrap legal">
+        <div class="sec-head rv"><h2><span class="t" data-t>PRIVACY</span><span class="t it" data-t>POLICY</span></h2><p>How this website handles your information.</p></div>
+        <ol class="policy rv" aria-label="Privacy policy">
+          <li><span class="num">01</span><div><h3>The short version</h3><p>This site has no forms, comments, ads or tracking. I don’t ask for your name or email here, and I don’t collect or sell your personal data.</p></div></li>
+          <li><span class="num">02</span><div><h3>What’s stored in your browser</h3><p>The site saves one small thing on your own device, never sent to me: a note that you’ve already seen the “click me” arrow on the home page, so it doesn’t show again. Clearing your browser data removes it. The site sets no cookies of its own.</p></div></li>
+          <li><span class="num">03</span><div><h3>Hosting and server logs</h3><p>The site is hosted by a third-party host. Like any web host, it may automatically log technical details about visits, such as IP address, browser type and pages requested, for security and operation. I don’t use those logs to identify or track you, and I have no way to link them to who you are.</p></div></li>
+          <li><span class="num">04</span><div><h3>Fonts, video and images</h3><p>Fonts, video and images on this site are served from the site itself, so loading a page doesn’t send your data to outside font or media providers.</p></div></li>
+          <li><span class="num">05</span><div><h3>The Ani Panel</h3><p>The Ani Panel (the logo animator at /anipanel) is a separate tool on this address. It has its own sign-in with Discord and its own privacy and terms page, which cover what it handles.</p></div></li>
+          <li><span class="num">06</span><div><h3>Links to other sites</h3><p>Some links, like the Discord invite, take you to other sites. Those sites have their own privacy policies and I’m not responsible for what they collect.</p></div></li>
+          <li><span class="num">07</span><div><h3>Commissions and Discord</h3><p>Orders happen over Discord, so what you share with me there (your Discord username, project details and payment messages) is covered by Discord’s own terms and privacy policy. I only use what you tell me to complete your order and keep a record of it. I don’t sell it or share it, except where I’m legally required to.</p></div></li>
+          <li><span class="num">08</span><div><h3>Children</h3><p>This site isn’t directed at children under 13, and I don’t knowingly collect personal information from them.</p></div></li>
+          <li><span class="num">09</span><div><h3>Changes</h3><p>I may update these policies as the site or how I work changes. The date at the top of this page shows when they were last updated; continuing to use the site or placing an order means you accept the current version.</p></div></li>
+          <li><span class="num">10</span><div><h3>Contact</h3><p>Questions about any of this? <a href="https://discord.com/users/1349737404449296414" target="_blank" rel="noreferrer">Message me on Discord</a>.</p></div></li>
+        </ol>
+      </section>
+      <a class="next" href="#/contact"><small>Questions?</small><span>CONTACT</span></a>
+      <div class="foot-slot"></div>
+    </div>
+
     <div class="page dark" data-page="contact" tabindex="-1">
       <header class="page-head contact-head">
         <div class="page-title">
@@ -174,6 +214,7 @@
           <li><a href="#/services">Services</a></li>
           <li><a href="#/contact">Contact</a></li>
           <li><a href="https://discord.gg/r8BqJbk7ga" target="_blank" rel="noreferrer">Discord</a></li>
+          <li><a href="#/legal">Legal</a></li>
         </ul>
       </div>
     </div>

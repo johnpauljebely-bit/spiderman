@@ -176,7 +176,7 @@
   const pageEls = Object.fromEntries($$('[data-page]').map(el => [el.dataset.page, el]));
   const foot = $('#siteFoot');
   const wipeEl = $('#wipe');
-  const TITLES = { work: 'Work', about: 'About', services: 'Services', contact: 'Contact' };
+  const TITLES = { work: 'Work', about: 'About', services: 'Services', contact: 'Contact', legal: 'Legal' };
   let activePage = null;
   let current = { key: null };
   let busy = false;

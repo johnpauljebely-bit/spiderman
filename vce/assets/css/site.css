@@ -574,6 +574,17 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .faq-list details[open] summary i { transform: rotate(45deg); }
 .faq-list details p { padding-bottom: 1.3em; color: var(--mute); max-width: 40em; }
 
+/* ---------- Legal ---------- */
+.legal { padding-bottom: clamp(64px, calc(80 * var(--mu)), 160px); }
+.legal .sec-head p { color: var(--mute); }
+.policy { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); max-width: 60em; }
+.policy li { display: grid; grid-template-columns: 3.2em 1fr; gap: 1em; padding-block: 1.4em; border-bottom: 1px solid var(--line); }
+.policy .num { color: #2b5fb0; font-weight: 500; font-size: .85em; padding-top: .45em; }
+.policy h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(22px, calc(20 * var(--mu)), 34px); line-height: 1.1; margin-bottom: .35em; }
+.policy p { color: var(--mute); max-width: 40em; }
+.policy a { border-bottom: 1px solid currentColor; }
+@media (max-width: 700px) { .policy li { grid-template-columns: 2.4em 1fr; gap: .6em; } }
+
 /* ---------- Contact ---------- */
 .contact-head .lead { margin-top: .4em; }
 .cta {
