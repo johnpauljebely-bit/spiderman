@@ -2,21 +2,58 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "redirects": [
-    { "source": "/app", "destination": "/anipanel/app", "permanent": false },
-    { "source": "/docs", "destination": "/anipanel/docs", "permanent": false },
-    { "source": "/admin", "destination": "/anipanel/admin", "permanent": false }
+    {
+      "source": "/app",
+      "destination": "/anipanel/app",
+      "permanent": false
+    },
+    {
+      "source": "/docs",
+      "destination": "/anipanel/docs",
+      "permanent": false
+    },
+    {
+      "source": "/admin",
+      "destination": "/anipanel/admin",
+      "permanent": false
+    },
+    {
+      "source": "/tessera/:path*",
+      "destination": "/patchpixelizer/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/badgepixelizer/:path*",
+      "destination": "/patchpixelizer/:path*",
+      "permanent": false
+    }
   ],
   "rewrites": [
-    { "source": "/legal", "destination": "/index.html" },
-    { "source": "/anipanel", "destination": "/anipanel/index.html" },
-    { "source": "/anipanel/((?!assets/).*)", "destination": "/anipanel/index.html" }
+    {
+      "source": "/legal",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/anipanel",
+      "destination": "/anipanel/index.html"
+    },
+    {
+      "source": "/anipanel/((?!assets/).*)",
+      "destination": "/anipanel/index.html"
+    }
   ],
   "headers": [
     {
       "source": "/anipanel/admin",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex" },
-        { "key": "X-Frame-Options", "value": "DENY" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
       ]
     }
   ]

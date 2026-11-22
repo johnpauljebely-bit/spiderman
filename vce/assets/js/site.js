@@ -1,4 +1,4 @@
-// Menu, routing, inner pages, lightbox and the halftone footer. The home scene lives in scene.js.
+// Menu, routing, inner pages, lightbox and the halftone footer. The walking-crowd home lives in crowd.js.
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -8,69 +8,311 @@
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const pad = n => String(n).padStart(2, '0');
 
-  /* ---------- Menu (Jet PDP) ---------- */
+  /* ---------- Search panel (a command menu: type to filter, arrows to move, Enter to open) ---------- */
+  const searchEl = $('#search');
+  const searchBtn = $('#searchBtn');
+  const input = $('#cmdInput');
+  const list = $('#cmdList');
+  const content = $('#cmdContent');
+  const hl = $('.cmd-hl', list);
+  const emptyEl = $('#cmdEmpty');
+  const touch = matchMedia('(hover: none)').matches;
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+  if (!isMac) $$('.k-mod').forEach(k => { k.textContent = 'Ctrl'; });
+  let searchOpen = false;
+  let activeId = null;
+  let pendingJump = null; // a policy card to scroll to once the legal page is showing
+
+  // Lucide icons (ISC), drawn at 24 and shown at 16
+  const ICONS = {
+    home: '<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    grid: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+    user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+    briefcase: '<path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/>',
+    message: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+    file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>',
+    sparkles: '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
+    type: '<polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/>',
+    pixels: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/>',
+    chat: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    at: '<circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>',
+    scale: '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+    out: '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>',
+    users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  };
+  const icon = (name, cls = 'i') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
+
+  // Everything the panel can find. `search: true` groups only show while there's a query.
+  function groups() {
+    const legal = $('[data-page="legal"]');
+    return [
+      { label: 'Pages', items: [
+        { label: 'Home', desc: 'Start here', icon: 'home', href: '#/', kw: 'start landing' },
+        { label: 'Work', desc: 'Everything I’ve made', icon: 'grid', href: '#/work', kw: 'portfolio projects' },
+        { label: 'About', desc: 'Who’s behind VCE', icon: 'user', href: '#/about', kw: 'vance designer me' },
+        { label: 'Services', desc: 'What I make and how ordering works', icon: 'briefcase', href: '#/services', kw: 'commission order process price' },
+        { label: 'Contact', desc: 'Start a commission on Discord', icon: 'message', href: '#/contact', kw: 'hire message dm' },
+        { label: 'Legal', desc: 'Order policies and privacy', icon: 'file', href: '#/legal', kw: 'terms rules privacy refunds' },
+      ] },
+      { label: 'Work', items: projects.map(p => ({
+        label: p.title, desc: p.tags.join(' · '), thumb: p.cover.sm, href: `#/work/${p.slug}`,
+        meta: p.price || '', kw: `${p.short || ''} ${p.role || ''}`,
+      })) },
+      { label: 'Tools', items: [
+        // Free for everyone in the Vance Collective Discord: each tool asks them to sign in with Discord first
+        { label: 'Ani Panel', desc: 'Animate your logo', icon: 'sparkles', href: '/anipanel', meta: 'Free for members', kw: 'animation logo animator move video free discord' },
+        { label: 'Hello Glass', desc: 'Liquid glass lettering', icon: 'type', href: '/helloglass/', meta: 'Free for members', kw: 'text type glass video free discord' },
+        { label: 'Patch Pixelizer', desc: 'Turn a logo into a pixel patch', icon: 'pixels', href: '/patchpixelizer/', meta: 'Free for members', kw: 'badge uniform pixel art tessera free discord' },
+        { label: 'Join Vance Collective', desc: 'The Discord server. Members use every tool free', icon: 'users', href: 'https://discord.gg/r8BqJbk7ga', external: true, kw: 'discord server community invite members free access unlock' },
+      ] },
+      { label: 'Policies', search: true, items: $$('.policy > li', legal).map(li => ({
+        label: $('h3', li).textContent,
+        desc: li.closest('section').dataset.toc,
+        icon: 'scale', href: '#/legal', jump: li.id, kw: $('p', li).textContent,
+      })) },
+      { label: 'Elsewhere', items: [
+        { label: 'Discord', desc: 'Message me directly', icon: 'chat', href: 'https://discord.com/users/1349737404449296414', external: true, kw: 'dm social' },
+        { label: 'Instagram', desc: 'Not linked yet', icon: 'at', disabled: true, meta: 'Soon', kw: 'social' },
+      ] },
+    ];
+  }
+
+  let items = []; // { el, text, group }
+  function build() {
+    let n = 0;
+    content.innerHTML = groups().map((g, gi) => `
+      <div class="cmd-group" role="group" aria-labelledby="cmdg${gi}"${g.search ? ' data-search' : ''}>
+        <div class="cmd-label" id="cmdg${gi}">${esc(g.label)}</div>
+        ${g.items.map(it => `
+          <div class="cmd-item" role="option" id="cmdo${n++}" aria-selected="false"${it.disabled ? ' aria-disabled="true"' : ''}
+            data-href="${esc(it.href || '')}"${it.jump ? ` data-jump="${esc(it.jump)}"` : ''}${it.external ? ' data-external' : ''}>
+            ${it.thumb ? `<img class="cmd-thumb" src="${esc(it.thumb)}" alt="" loading="lazy" decoding="async">` : `<span class="cmd-ico">${icon(it.icon)}</span>`}
+            <span class="cmd-text"><span class="cmd-name">${esc(it.label)}</span><span class="cmd-desc">${esc(it.desc || '')}</span></span>
+            ${it.meta ? `<span class="cmd-meta">${esc(it.meta)}</span>` : ''}
+            ${it.external || (it.href && it.href[0] === '/') ? `<span class="cmd-go">${icon('out')}</span>` : ''}
+          </div>`).join('')}
+      </div>`).join('');
+    const all = groups().flatMap(g => g.items);
+    items = $$('.cmd-item', content).map((el, i) => ({ el, text: `${all[i].label} ${all[i].desc || ''} ${all[i].kw || ''}`.toLowerCase() }));
+  }
+
+  const visible = () => items.filter(it => !it.el.hidden && !it.el.closest('[hidden]') && it.el.getAttribute('aria-disabled') !== 'true').map(it => it.el);
+
+  function filter(q) {
+    const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+    // Remember where rows were, so survivors can slide to their new place (FLIP)
+    const before = new Map(items.map(it => [it.el.id, it.el.hidden ? null : it.el.offsetTop]));
+    for (const it of items) it.el.hidden = !terms.every(t => it.text.includes(t));
+    for (const g of $$('.cmd-group', content)) g.hidden = (g.hasAttribute('data-search') && !terms.length) || !$('.cmd-item:not([hidden])', g);
+    const none = !$('.cmd-group:not([hidden])', content);
+    emptyEl.hidden = !none;
+    emptyEl.innerHTML = none ? `<span class="cmd-empty-ico">${icon('file')}</span><b>No results for “${esc(q.trim())}”</b><span>Try “logo”, “refund” or “discord”.</span>` : '';
+    input.setAttribute('aria-expanded', String(!none));
+    if (!reduced) {
+      for (const it of items) {
+        if (it.el.hidden || !it.el.closest('.cmd-group:not([hidden])')) continue;
+        const from = before.get(it.el.id);
+        if (from == null) it.el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 120, easing: 'ease-out' });
+        else if (Math.abs(from - it.el.offsetTop) > .5) it.el.animate([{ translate: `0 ${from - it.el.offsetTop}px` }, { translate: '0 0' }], { duration: 200, easing: 'cubic-bezier(.23,1,.32,1)' });
+      }
+    }
+    // Start on the first row whose own name matches (so "refund" lands on Refunds, not on the Legal page)
+    const rows = visible();
+    const named = terms.length && rows.find(el => terms.every(t => $('.cmd-name', el).textContent.toLowerCase().includes(t)));
+    setActive((named || rows[0])?.id ?? null, true);
+    if (named) named.scrollIntoView({ block: 'nearest' });
+    paintMatches(terms);
+    fitHeight();
+  }
+
+  // The list follows its results' height
+  function fitHeight() {
+    list.style.height = `${content.offsetHeight + (emptyEl.hidden ? 0 : emptyEl.offsetHeight)}px`;
+  }
+
+  // One shared highlight slides to the active row
+  function setActive(id, jumpTo) {
+    activeId = id;
+    for (const it of items) {
+      const on = it.el.id === id;
+      it.el.toggleAttribute('data-active', on);
+      it.el.setAttribute('aria-selected', String(on));
+    }
+    const row = id && document.getElementById(id);
+    if (!row) {
+      hl.style.opacity = '0';
+      input.removeAttribute('aria-activedescendant');
+      return;
+    }
+    input.setAttribute('aria-activedescendant', id);
+    const hidden = hl.style.opacity !== '1';
+    if (hidden || jumpTo) hl.style.transitionProperty = 'none';
+    hl.style.translate = `0 ${row.offsetTop}px`;
+    hl.style.height = `${row.offsetHeight}px`;
+    hl.style.opacity = '1';
+    if (hidden || jumpTo) {
+      void hl.offsetHeight;
+      hl.style.transitionProperty = '';
+    }
+  }
+
+  // Matched letters, marked with the CSS Custom Highlight API so the rows' text is never rewritten
+  function paintMatches(terms) {
+    if (!window.CSS || !CSS.highlights || typeof Highlight === 'undefined') return;
+    const ranges = [];
+    if (terms.length) {
+      for (const it of items) {
+        if (it.el.hidden) continue;
+        const walker = document.createTreeWalker(it.el, NodeFilter.SHOW_TEXT);
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+          const text = node.textContent.toLowerCase();
+          for (const t of terms) {
+            for (let at = text.indexOf(t); at !== -1; at = text.indexOf(t, at + t.length)) {
+              const r = new Range();
+              r.setStart(node, at);
+              r.setEnd(node, at + t.length);
+              ranges.push(r);
+            }
+          }
+        }
+      }
+    }
+    CSS.highlights.set('vce-match', new Highlight(...ranges));
+  }
+
+  function choose(el) {
+    if (!el || el.getAttribute('aria-disabled') === 'true') return;
+    el.toggleAttribute('data-running', true);
+    setTimeout(() => el.removeAttribute('data-running'), 140);
+    const href = el.dataset.href;
+    if (el.hasAttribute('data-external')) {
+      window.open(href, '_blank', 'noopener');
+      setSearch(false);
+      return;
+    }
+    if (href[0] === '/') {
+      location.href = href;
+      return;
+    }
+    pendingJump = el.dataset.jump || null;
+    // Same page: no hashchange, so close here (and jump, if it's a policy)
+    if (routeOf(href).key === current.key) {
+      setSearch(false);
+      runJump();
+    } else location.hash = href;
+  }
+  function runJump() {
+    if (!pendingJump) return;
+    const card = document.getElementById(pendingJump);
+    pendingJump = null;
+    if (!card) return;
+    card.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    card.classList.toggle('flash', false);
+    void card.offsetWidth;
+    card.classList.toggle('flash', true);
+  }
+
+  content.addEventListener('pointermove', e => {
+    const el = e.target.closest('.cmd-item:not([aria-disabled="true"])');
+    if (el && el.id !== activeId) setActive(el.id);
+  });
+  content.addEventListener('click', e => choose(e.target.closest('.cmd-item')));
+  input.addEventListener('input', () => filter(input.value));
+  input.addEventListener('keydown', e => {
+    const rows = visible();
+    const at = rows.findIndex(r => r.id === activeId);
+    let to;
+    if (e.key === 'ArrowDown') to = rows[(at + 1) % rows.length];
+    else if (e.key === 'ArrowUp') to = rows[(at - 1 + rows.length) % rows.length];
+    else if (e.key === 'Home') to = rows[0];
+    else if (e.key === 'End') to = rows[rows.length - 1];
+    else if (e.key === 'Enter') {
+      if (e.isComposing) return;
+      e.preventDefault();
+      choose(rows[at]);
+      return;
+    } else if (e.key === 'Escape') {
+      // First Escape clears the search, the next one closes
+      if (input.value) {
+        e.preventDefault();
+        e.stopPropagation();
+        input.value = '';
+        filter('');
+      }
+      return;
+    } else return;
+    e.preventDefault();
+    if (!to) return;
+    list.toggleAttribute('data-repeat', e.repeat);
+    setActive(to.id);
+    to.scrollIntoView({ block: 'nearest' });
+  });
+  input.addEventListener('keyup', () => list.removeAttribute('data-repeat'));
+
+  function setSearch(open) {
+    if (open === searchOpen) return;
+    searchOpen = open;
+    if (open) {
+      if (menuOpen) setMenu(false);
+      if (!items.length) build();
+      input.value = '';
+      filter('');
+    }
+    body.classList.toggle('search-on', open);
+    searchEl.classList.toggle('open', open);
+    searchEl.setAttribute('aria-hidden', String(!open));
+    searchEl.inert = !open;
+    searchBtn.setAttribute('aria-expanded', String(open));
+    if (open) {
+      input.focus({ preventScroll: true });
+      requestAnimationFrame(() => setActive(activeId, true));
+    } else if (searchEl.contains(document.activeElement) || document.activeElement === body) searchBtn.focus({ preventScroll: true });
+  }
+  searchBtn.addEventListener('click', () => (searchOpen ? input.focus() : setSearch(true)));
+  $('#searchScrim').addEventListener('click', () => setSearch(false));
+  addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      setSearch(!searchOpen);
+    } else if (e.key === '/' && !searchOpen && !e.target.closest('input, textarea, [contenteditable]')) {
+      e.preventDefault();
+      setSearch(true);
+    }
+  });
+
+  /* ---------- Menu: the round button slides the three sheets in from the right (Jet PDP) ---------- */
   const menu = $('#menu');
   const menuBtn = $('#menuBtn');
   let menuOpen = false;
   function setMenu(open) {
+    if (open === menuOpen) return;
     menuOpen = open;
-    toneDirty = true;
+    if (open && searchOpen) setSearch(false);
     body.classList.toggle('menu-on', open);
     menu.classList.toggle('open', open);
     menu.setAttribute('aria-hidden', String(!open));
     menu.inert = !open;
     menuBtn.setAttribute('aria-expanded', String(open));
-    if (open) {
-      hideHint();
-      $('.links a', menu).focus({ preventScroll: true });
-    }
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    if (open) $('.links a', menu).focus({ preventScroll: true });
     else if (menu.contains(document.activeElement) || document.activeElement === body) menuBtn.focus({ preventScroll: true });
   }
   menuBtn.addEventListener('click', () => setMenu(!menuOpen));
   // A different route closes the menu once the wipe covers it, so only same-route clicks close it here
-  $$('.links a[href^="#"]', menu).forEach(a => a.addEventListener('click', () => {
-    if (routeOf(a.getAttribute('href')).key === current.key) setMenu(false);
-  }));
+  menu.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]:not([data-noop])');
+    if (a && routeOf(a.getAttribute('href')).key === current.key) setMenu(false);
+  });
   // No Instagram account linked yet, so that one stays inert
   $$('[data-noop]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
 
-  // Off the home page the logo goes home
-  $('.power').addEventListener('click', () => {
-    hideHint();
-    if (!body.classList.contains('at-home')) location.hash = '#/';
-  });
-
-  /* ---------- First visit on this device: an arrow pointing at the logo ---------- */
-  const hint = $('#hint');
-  const HINT_KEY = 'vce-hint-seen';
-  let hintTimer = 0;
-  const hintSeen = () => { try { return localStorage.getItem(HINT_KEY) === '1'; } catch { return false; } };
-  function queueHint() {
-    if (hintTimer || hintSeen()) return;
-    hintTimer = setTimeout(showHint, 1700); // once the headline has finished coming in
-  }
-  function showHint() {
-    hintTimer = 0;
-    if (hintSeen() || !body.classList.contains('at-home') || menuOpen) return;
-    try { localStorage.setItem(HINT_KEY, '1'); } catch {}
-    if (matchMedia('(hover: none)').matches) $('.hint-verb', hint).textContent = 'Tap';
-    hint.hidden = false;
-    requestAnimationFrame(() => requestAnimationFrame(() => hint.classList.add('on')));
-  }
-  function hideHint() {
-    clearTimeout(hintTimer);
-    hintTimer = 0;
-    if (hint.hidden || hint.classList.contains('off')) return;
-    hint.classList.add('off');
-    setTimeout(() => { hint.hidden = true; }, 400);
-  }
-
   /* ---------- Content ---------- */
+
   // Card shapes follow the work, in data.js order: Clothing and Embed Banners wide, the two logo sets square,
   // Misc (a poster cover) upright. See .work-grid in site.css.
   const SPANS = ['wide', 'wide', 'square', 'square', 'tall'];
   $('#workGrid').innerHTML = projects.map((p, i) => `
-    <a class="card rv ${SPANS[i % SPANS.length]}${p.contain ? ' contain' : ''}" href="#/work/${p.slug}">
+    <a class="card rv ${SPANS[i % SPANS.length]}${p.contain ? ' contain' : ''}${p.onBlack ? ' on-black' : ''}" href="#/work/${p.slug}">
       <figure><img src="${p.cover.sm}" width="${p.cover.w}" height="${p.cover.h}" alt="${esc(p.title)}: cover image" loading="lazy" decoding="async"></figure>
       <div class="card-meta"><span class="num">${pad(i + 1)}</span><h3>${esc(p.title)}</h3><span class="card-tags">${p.tags.map(esc).join(' · ')}</span>${p.price ? `<span class="card-price">${esc(p.price)}</span>` : ''}</div>
     </a>`).join('');
@@ -83,7 +325,7 @@
 
   // Two-line title: the last word in italic, as in the other headlines
   function titleLines(title) {
-    const words = title.toUpperCase().split(' ');
+    const words = title.split(' ');
     const last = words.pop();
     return (words.length ? `<span class="t" data-t>${esc(words.join(' '))}</span>` : '') + `<span class="t it" data-t>${esc(last)}</span>`;
   }
@@ -108,7 +350,7 @@
     // Beside the title: an illustration, not the work (the work is the gallery below)
     $('#pjCover').innerHTML = `<img src="${p.art.src}" width="${p.art.w}" height="${p.art.h}" alt="">`;
     const g = $('#pjGallery');
-    g.className = `gallery wrap ${p.video ? 'single' : p.layout || ''}`;
+    g.className = `gallery wrap ${p.video ? 'single' : p.layout || ''}${p.onBlack ? ' on-black' : ''}`;
     shots = p.images;
     g.innerHTML = p.video
       ? `<video src="${p.video}" poster="${p.cover.src}" controls muted loop playsinline preload="metadata"></video>`
@@ -118,9 +360,42 @@
         </button>`).join('');
     const nx = $('#pjNext');
     nx.href = `#/work/${next.slug}`;
-    $('span', nx).textContent = next.title.toUpperCase();
+    $('span', nx).textContent = next.title;
     return true;
   }
+
+  /* ---------- Legal: a contents list that jumps within the page and follows your place ---------- */
+  const legalPage = $('[data-page="legal"]');
+  $('#legalToc').innerHTML = $$('section[data-toc]', legalPage).map(sec => {
+    const rows = $$('.policy > li', sec).map((li, i) => {
+      li.id = `${sec.id}-${i + 1}`;
+      return `<li><button type="button" data-jump="${li.id}"><span class="num">${pad(i + 1)}</span>${esc($('h3', li).textContent)}</button></li>`;
+    }).join('');
+    return `<div class="toc-group"><button type="button" class="toc-head" data-jump="${sec.id}">${esc(sec.dataset.toc)}</button><ol>${rows}</ol></div>`;
+  }).join('');
+  legalPage.addEventListener('click', e => {
+    const b = e.target.closest('[data-jump]');
+    if (!b) return;
+    const el = document.getElementById(b.dataset.jump);
+    el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    if (el.matches('li')) {
+      el.classList.toggle('flash', false);
+      void el.offsetWidth;
+      el.classList.toggle('flash', true);
+    }
+  });
+  // The card nearest the top third of the screen is "here" in the contents
+  function markLegal() {
+    const line = innerHeight * .34;
+    let here = null, best = -Infinity;
+    // Cards side by side share a top: the left one of the lowest row above the line wins
+    for (const li of $$('.policy > li', legalPage)) {
+      const top = li.getBoundingClientRect().top;
+      if (top < line && top > best + 1) { best = top; here = li.id; }
+    }
+    $$('#legalToc [data-jump]').forEach(b => b.classList.toggle('here', b.dataset.jump === here));
+  }
+  legalPage.addEventListener('scroll', markLegal, { passive: true });
 
   /* ---------- Lightbox ---------- */
   const lb = $('#lightbox');
@@ -169,7 +444,10 @@
       }
       return;
     }
-    if (e.key === 'Escape' && menuOpen) setMenu(false);
+    if (e.key === 'Escape') {
+      if (searchOpen) setSearch(false);
+      else if (menuOpen) setMenu(false);
+    }
   });
 
   /* ---------- Pages and routing (Jet PDP) ---------- */
@@ -216,12 +494,14 @@
     const home = route.name === 'home';
     body.classList.toggle('at-home', home);
     body.classList.toggle('page-on', !home);
+    // The header pill marks where you are; project pages count as Work
+    const section = route.name === 'project' ? 'work' : route.name;
+    $$('.ice-pill a').forEach(a => a.dataset.route === section ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
     if (home) {
       activePage = null;
-      window.VCEScene && (VCEScene.arrive(), VCEScene.label());
-      queueHint();
+      window.VCECrowd && VCECrowd.arrive();
     } else {
-      hideHint();
+      window.VCECrowd && VCECrowd.leave();
       if (route.name === 'project') renderProject(route.slug);
       const el = pageEls[route.name];
       activePage = el;
@@ -229,21 +509,13 @@
       $('.foot-slot', el).append(foot);
       el.classList.add('active');
       el.scrollTop = 0;
-      $('.power').setAttribute('aria-label', 'Vance Creative Enterprises, home');
-      $('.power').removeAttribute('aria-pressed');
       halftone.relayout();
       revealInView();
+      if (route.name === 'legal') runJump();
     }
-    toneDirty = true;
   }
-  Object.values(pageEls).forEach(el => el.addEventListener('scroll', () => {
-    toneDirty = true;
-    revealInView();
-  }, { passive: true }));
-  addEventListener('resize', () => {
-    revealInView();
-    toneDirty = true;
-  });
+  Object.values(pageEls).forEach(el => el.addEventListener('scroll', revealInView, { passive: true }));
+  addEventListener('resize', revealInView);
 
   function wipe(midway) {
     busy = true;
@@ -273,6 +545,7 @@
   function navigate(route) {
     if (route.key === current.key) {
       if (menuOpen) setMenu(false);
+      if (searchOpen) setSearch(false);
       return;
     }
     if (busy) return;
@@ -280,37 +553,11 @@
     setTitle(route);
     wipe(() => {
       if (menuOpen) setMenu(false);
+      if (searchOpen) setSearch(false);
       setPage(route);
-      (activePage || $('.scene')).focus({ preventScroll: true });
+      (activePage || $('#home')).focus({ preventScroll: true });
     });
   }
-
-  /* ---------- Menu button tone: light or dark, from whatever sits behind it ---------- */
-  let toneDirty = true;
-  function updateTone() {
-    const r = menuBtn.getBoundingClientRect();
-    let light = false;
-    if (activePage) {
-      for (const el of document.elementsFromPoint(r.left + r.width / 2, r.top + r.height / 2)) {
-        if (el.closest('.btn-menu, .wipe, .power')) continue;
-        if (el.matches('img, video')) break;
-        const cs = getComputedStyle(el);
-        if (cs.backgroundImage !== 'none') break;
-        const [c0, c1, c2, alpha = 1] = cs.backgroundColor.match(/[\d.]+/g).map(Number);
-        if (alpha < .5) continue;
-        light = .299 * c0 + .587 * c1 + .114 * c2 > 140;
-        break;
-      }
-    }
-    body.classList.toggle('menu-light', light);
-  }
-  (function tick() {
-    if (toneDirty) {
-      toneDirty = false;
-      updateTone();
-    }
-    requestAnimationFrame(tick);
-  })();
 
   /* ---------- Footer wordmark: "vce" in halftone dots (the Move footer's mechanics) ---------- */
   const halftone = (() => {

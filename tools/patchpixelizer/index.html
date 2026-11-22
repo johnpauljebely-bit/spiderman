@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>/* Relative links need the trailing slash: /patchpixelizer → /patchpixelizer/ */ if (!/(\/|\.html)$/.test(location.pathname)) location.replace(location.pathname + '/' + location.search + location.hash)</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tessera · Every Badge, Pixel Perfect</title>
+<meta name="description" content="Big logos rarely survive the shrink to a uniform badge. Tessera cuts the background, flattens the colours and snaps it to a clean pixel grid, right in your browser.">
+<meta name="theme-color" content="#02071C">
+<link rel="icon" href="landing/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Instrument+Serif:ital@1&display=swap">
+<!-- the field pair and the hand are fetched with fetch() for byte progress, so preload them as fetch -->
+<link rel="preload" as="fetch" crossorigin href="https://assets.uberdesigner.ai/lucid/night.webp">
+<link rel="preload" as="fetch" crossorigin href="https://assets.uberdesigner.ai/lucid/hand.webp">
+<link rel="preload" as="fetch" crossorigin href="https://assets.uberdesigner.ai/lucid/day.webp">
+<link rel="stylesheet" href="landing/landing.css">
+<!-- Discord sign-in comes back to the site root; send it on to the tool page that asked (named in state, see gate/vce-gate.js) -->
+<script>(function () { var h = location.hash; if (!/access_token=|[#&]error=/.test(h)) return;
+  var p = ''; try { p = atob((new URLSearchParams(h.slice(1)).get('state') || '').split('.')[1].replace(/-/g, '+').replace(/_/g, '/')); } catch (e) {}
+  if (/^\/(?!\/)/.test(p) && p !== location.pathname) location.replace(p + h); })();</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/gsap.min.js" defer></script>
+<script type="module" src="landing/main.js"></script>
+</head>
+<body>
+<!-- fixed background: night field, day field (revealed by --sun), sunrise glow, shade, white tiles -->
+<div class="scene" id="scene" aria-hidden="true">
+  <img class="field" id="night" alt="">
+  <img class="field day" id="day" alt="">
+  <div class="glow" id="glow"></div>
+  <div class="shade"></div>
+  <div class="tiles" id="tiles"></div>
+  <div class="probe" id="probe"></div>
+</div>
+
+<!-- intro: misted glass a finger wipes clear while the counter runs to 100% -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="pre-scene" id="pre-scene">
+    <canvas class="fog" id="fog"></canvas>
+    <div class="comp" id="comp">
+      <div class="hand-move" id="hand-move">
+        <div class="hand" data-hand>
+          <img id="hand-img" alt="">
+          <span class="press" data-press></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="counter" data-counter>[<span id="count">00%</span>]</p>
+  <svg class="path-probe" width="0" height="0"><path id="wipe-path"/></svg>
+</div>
+
+<header class="nav" id="nav" data-reveal="nav" data-theme="dark">
+  <a class="logo" href="#top" aria-label="Tessera, back to top"><svg class="mark" viewBox="8 138 1916 1777" aria-hidden="true"><path fill="currentColor" d="M398 138H1104L656 584H8Z M1260 138H1924L1558 572H1112Q1070 572 1070 614V1365L618 1915V772Z"/></svg><span>Tessera</span></a>
+  <nav class="pill" aria-label="Main">
+    <a href="#top">Main</a>
+    <a href="#clarity">Overview</a>
+    <a href="app/">Editor</a>
+    <a href="#" data-vce>VCE</a>
+  </nav>
+  <a class="schedule" href="app/"><span class="label">Open the editor</span><span class="circle"><svg class="i-up" viewBox="0 0 11.8536 11.8536" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M11.3536 11.5V0.5H0.353553M11.3536 0.5L0.353553 11.5"/></svg></span></a>
+</header>
+
+<main>
+  <section class="hero" id="top">
+    <h1 class="display" aria-label="Every Badge Pixel Perfect" data-reveal="headline">
+      <span class="line" data-line aria-hidden="true">Every <span class="serif">Badge</span></span>
+      <span class="line indent" data-line aria-hidden="true">Pixel Perfect</span>
+    </h1>
+
+    <div class="lead" data-reveal="lead">
+      <p>Big logos rarely survive the shrink to a uniform badge.</p>
+      <p>It cuts the background, flattens the colours and snaps it to a clean pixel grid.</p>
+    </div>
+
+    <div class="demo-row">
+      <a class="demo" href="app/" data-reveal="demo"><span class="label">Open the editor</span><span class="circle"><svg class="i-up" viewBox="0 0 11.8536 11.8536" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M11.3536 11.5V0.5H0.353553M11.3536 0.5L0.353553 11.5"/></svg></span></a>
+    </div>
+
+    <aside class="lens" data-reveal="card" aria-label="A badge pixelized live in your browser">
+      <div class="lens-head">
+        <p class="lens-title">Pixelized in your browser</p>
+        <div class="rule"></div>
+        <div class="lens-row">
+          <div class="lens-name"><span class="idx" id="lens-idx">01</span><span id="lens-name">Alaska Roleplay</span></div>
+          <div class="lens-btns">
+            <button type="button" id="lens-prev" aria-label="Previous badge"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M14 9L9 14L14 19M9 14L19 14"/></svg></button>
+            <button type="button" id="lens-next" aria-label="Next badge"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M14 19L19 14L14 9M19 14H9"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="lens-content">
+        <div class="visual">
+          <svg viewBox="0 0 175.694 175.694" aria-hidden="true">
+            <defs>
+              <linearGradient id="ring-grad" gradientUnits="userSpaceOnUse" x1="87.8473" y1="0" x2="19.1388" y2="27.334" gradientTransform="rotate(90 87.847 87.847)">
+                <stop offset="0" stop-color="#40A3FF"/><stop offset="1" stop-color="#006FFF"/>
+              </linearGradient>
+            </defs>
+            <circle cx="87.847" cy="87.847" r="87.847" fill="rgba(255,255,255,0.15)"/>
+            <circle id="ring" cx="87.847" cy="87.847" r="85.29" fill="none" stroke="url(#ring-grad)" stroke-width="5.12" stroke-linecap="butt" transform="rotate(-90 87.847 87.847)"/>
+          </svg>
+          <canvas id="lens-badge" width="38" height="38" role="img" aria-label="The badge at 38 by 38 pixels"></canvas>
+        </div>
+        <dl class="metrics">
+          <div><dt>Size</dt><dd id="m-size">38 × 38 px</dd></div>
+          <div><dt>Shades → colours</dt><dd id="m-cols">–</dd></div>
+          <div><dt>Grid filled</dt><dd id="m-merged">–</dd></div>
+        </dl>
+      </div>
+    </aside>
+
+    <a class="discover" href="#clarity" data-reveal="discover"><span class="arrow" aria-hidden="true">↓</span><span>Discover more</span></a>
+  </section>
+
+  <section class="clarity" id="clarity">
+    <h2 class="display" aria-label="From Logo to Patch" data-reveal="clarity-headline">
+      <span class="line" data-line aria-hidden="true">From <span class="serif">Logo</span></span>
+      <span class="line sky" data-line aria-hidden="true">to Patch</span>
+    </h2>
+    <p class="clarity-text" data-reveal="clarity-text">Drop in any badge, logo or patch. Tessera removes flat backgrounds, merges near-identical shades, snaps round badges to a stepped circle and mirrors what&rsquo;s symmetric. Then touch it up with pencil, fill and mirror draw before you export.</p>
+    <div class="cards">
+      <div class="card-wrap" data-reveal="clarity-card"><article class="stat"><svg class="stat-bg" viewBox="0 0 448 403" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="card-grad-1" gradientUnits="userSpaceOnUse" x1="224" y1="0" x2="224" y2="403"><stop offset="0" stop-color="#F6F6F6"/><stop offset="1" stop-color="#EAEAEA"/></linearGradient></defs><path d="M0 28C0 12.536 12.536 0 28 0H345.455C352.252 0 358.817 2.472 363.925 6.956L438.47 72.386C444.527 77.702 448 85.37 448 93.43V375C448 390.464 435.464 403 420 403H102.545C95.748 403 89.183 400.528 84.075 396.044L9.53 330.614C3.473 325.298 0 317.63 0 309.57V28Z" fill="url(#card-grad-1)"/></svg><p class="stat-value">38px</p><p class="stat-text">The size uniform badges use, one click away. Anything from 4 to 256 works too.</p><p class="stat-index">01</p></article></div>
+      <div class="card-wrap" data-reveal="clarity-card"><article class="stat"><svg class="stat-bg" viewBox="0 0 448 403" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="card-grad-2" gradientUnits="userSpaceOnUse" x1="224" y1="0" x2="224" y2="403"><stop offset="0" stop-color="#F6F6F6"/><stop offset="1" stop-color="#EAEAEA"/></linearGradient></defs><path d="M0 28C0 12.536 12.536 0 28 0H345.455C352.252 0 358.817 2.472 363.925 6.956L438.47 72.386C444.527 77.702 448 85.37 448 93.43V375C448 390.464 435.464 403 420 403H102.545C95.748 403 89.183 400.528 84.075 396.044L9.53 330.614C3.473 325.298 0 317.63 0 309.57V28Z" fill="url(#card-grad-2)"/></svg><p class="stat-value">3 files</p><p class="stat-text">Ways to save it: Paint.NET, a layered PSD for Photopea, or a transparent PNG.</p><p class="stat-index">02</p></article></div>
+      <div class="card-wrap" data-reveal="clarity-card"><article class="stat blue"><svg class="stat-bg" viewBox="0 0 448 403" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="card-grad-3" gradientUnits="userSpaceOnUse" x1="224" y1="0" x2="253.204" y2="400.872"><stop offset="0" stop-color="#40A3FF"/><stop offset="1" stop-color="#A6D4FF"/></linearGradient></defs><path d="M0 28C0 12.536 12.536 0 28 0H345.455C352.252 0 358.817 2.472 363.925 6.956L438.47 72.386C444.527 77.702 448 85.37 448 93.43V375C448 390.464 435.464 403 420 403H102.545C95.748 403 89.183 400.528 84.075 396.044L9.53 330.614C3.473 325.298 0 317.63 0 309.57V28Z" fill="url(#card-grad-3)"/></svg><p class="stat-value">0 uploads</p><p class="stat-text">It all runs in your browser, so your images never leave your computer.</p><p class="stat-index">03</p></article></div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

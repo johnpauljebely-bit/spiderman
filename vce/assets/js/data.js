@@ -186,7 +186,8 @@ window.VCE_PROJECTS = [
     ],
     "price": "1,599 Robux + tax",
     "cta": "Order a vector logo",
-    "contain": true
+    "contain": true,
+    "onBlack": true
   },
   {
     "slug": "logos",
@@ -274,6 +275,7 @@ window.VCE_PROJECTS = [
     "price": "499–699 Robux + tax",
     "cta": "Order a logo",
     "contain": true,
+    "onBlack": true,
     "layout": "squares"
   },
   {

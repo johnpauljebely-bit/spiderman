@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { motion, useReducedMotion } from 'motion/react'
 import { useEffect, useState, type CSSProperties, type SVGProps } from 'react'
-import { getDiscordAuthorizeUrl } from '../lib/discordAuth'
+import { getDiscordAuthorizeUrl, GUILD_INVITE, GUILD_NAME } from '../lib/discordAuth'
 import { to } from '../lib/paths'
 import { useSplashLifted } from './splash-context'
 
@@ -9,7 +9,7 @@ import { useSplashLifted } from './splash-context'
 // drifting line art on one side and a single sign-in button on the other. Rebuilt on plain Tailwind
 // (no shadcn / Radix) and re-skinned to the app's white-and-black look, with Discord instead of GitHub.
 
-const DiscordIcon = (props: SVGProps<SVGSVGElement>) => (
+export const DiscordIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden {...props}>
     <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z" />
   </svg>
@@ -18,6 +18,13 @@ const DiscordIcon = (props: SVGProps<SVGSVGElement>) => (
 const Spinner = (props: SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden {...props}>
     <path d="M21 12a9 9 0 1 1-6.22-8.56" />
+  </svg>
+)
+
+const ArrowOut = (props: SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+    <path d="M7 7h10v10" />
+    <path d="M7 17 17 7" />
   </svg>
 )
 
@@ -132,7 +139,7 @@ export function LoginScreen({ error }: { error: string | null }) {
               Sign in to Move.
             </h1>
             <p style={enter(2, lifted)} className="enter text-sm text-muted">
-              One click with Discord. You&apos;ll stay signed in for 5 days.
+              Free for everyone in the <span className="text-ink">{GUILD_NAME}</span> Discord. Sign in and we&apos;ll check you&apos;re a member.
             </p>
           </div>
 
@@ -158,14 +165,23 @@ export function LoginScreen({ error }: { error: string | null }) {
             <span role="status" className="sr-only">
               {redirecting ? 'Redirecting to Discord' : ''}
             </span>
+            <div className="my-4 flex items-center gap-3 text-xs text-muted before:h-px before:flex-1 before:bg-panel-border after:h-px after:flex-1 after:bg-panel-border">
+              Not in the server yet?
+            </div>
+            <a
+              href={GUILD_INVITE}
+              target="_blank"
+              rel="noreferrer"
+              className="btn flex h-11 w-full items-center justify-center gap-2 rounded-full text-sm font-medium"
+            >
+              Join {GUILD_NAME}
+              <ArrowOut className="size-3.5 text-muted" />
+            </a>
           </div>
 
           <p style={enter(4, lifted)} className="enter text-xs text-muted">
-            Access is paid. You won&apos;t get in unless you{' '}
-            <a href="https://discord.com/users/1349737404449296414" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-ink">
-              DM me on Discord
-            </a>{' '}
-            and pay first.
+            Discord only tells us your name and whether you&apos;re in {GUILD_NAME}. You stay signed in for 5 days, on Move and the other
+            VCE tools.
           </p>
         </div>
       </div>

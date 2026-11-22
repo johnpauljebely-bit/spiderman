@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello Glass · App</title>
+    <link rel="icon" href="/helloglass/favicon.svg" type="image/svg+xml" />
+    <!-- Free for Vance Collective members: Discord sign-in before the tool opens (public/gate/vce-gate.js) -->
+    <script src="/helloglass/gate/vce-gate.js" data-tool="Hello Glass" data-home="/helloglass/" defer></script>
+    <script type="module" crossorigin src="/helloglass/assets/app-9osgf38J.js"></script>
+    <link rel="modulepreload" crossorigin href="/helloglass/assets/writer-C43zC5Gr.js">
+    <link rel="stylesheet" crossorigin href="/helloglass/assets/app-Chunwonq.css">
+  </head>
+  <body>
+    <main id="stage"><canvas id="view" aria-label="Liquid glass hello animation"></canvas></main>
+    <div id="drop" hidden aria-hidden="true">
+      <div class="drop-card">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" /><path d="M3 16l5-5 4 4 3-3 6 6" /><circle cx="15.5" cy="8.5" r="1.5" /></svg>
+        <strong>Drop image to use as background</strong>
+        <span>PNG, JPEG, WebP or GIF</span>
+      </div>
+    </div>
+
+    <aside id="panel" aria-label="Animation settings">
+      <header class="panel-head">
+        <a class="home-link" href="/helloglass/">&larr; Home</a>
+        <h1>Hello Glass</h1>
+        <p>Liquid glass lettering, written word by word.</p>
+      </header>
+      <div class="panel-body"></div>
+    </aside>
+
+    <nav id="transport" aria-label="Playback">
+      <button id="replay" class="icon" title="Replay (R)" aria-label="Replay">
+        <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" /></svg>
+      </button>
+      <button id="play" class="icon primary" data-state="playing" title="Pause (Space)" aria-label="Pause">
+        <svg class="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" /></svg>
+        <svg class="i-play" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z" /></svg>
+      </button>
+      <button id="record" class="icon" title="Export video (E)" aria-label="Export video">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" /></svg>
+      </button>
+      <span id="rec-info" aria-live="polite"></span>
+      <span class="sep"></span>
+      <button id="hide" class="icon" title="Hide controls (H)" aria-label="Hide controls">
+        <svg viewBox="0 0 24 24"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" /><circle cx="12" cy="12" r="2.5" /></svg>
+      </button>
+      <button id="fullscreen" class="icon" title="Full screen (F)" aria-label="Full screen">
+        <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg>
+      </button>
+    </nav>
+
+  </body>
+</html>

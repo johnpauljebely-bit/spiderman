@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Vance Creative Enterprises</title>
 <meta name="description" content="Vance Creative Enterprises — a one-person design studio in Vancouver making logos, brand identities and graphics for Discord and Roblox communities.">
-<meta name="theme-color" content="#2b5fb0">
+<meta name="theme-color" content="#ffffff">
 <!-- Link previews (Discord, iMessage, X…). The component-embed script is Discord's: no accent bar, title + blurb,
      the mark as a thumbnail and four link buttons. No accent_color, so no side bar. -->
 <meta property="og:type" content="website">
@@ -23,50 +23,57 @@
 <meta name="twitter:description" content="A one-person design studio in Vancouver making logos, brand identities and graphics for Discord and Roblox communities. Order on Discord, pay in Robux.">
 <meta name="twitter:image" content="https://madebyvance.vercel.app/assets/brand/embed.png">
 <script id="discord:component-embed" type="application/vnd.discord.component-embed+json">{"component":{"type":17,"components":[{"type":9,"components":[{"type":10,"content":"## [**Vance Creative Enterprises**](https://madebyvance.vercel.app/)\nA one-person design studio in Vancouver making logos, brand identities and graphics for Discord and Roblox communities. Order on Discord, pay in Robux."}],"accessory":{"type":11,"media":{"url":"https://madebyvance.vercel.app/assets/brand/embed.png"}}},{"type":14,"spacing":2},{"type":1,"components":[{"type":2,"style":5,"url":"https://madebyvance.vercel.app/#/contact","label":"Contact"},{"type":2,"style":5,"url":"https://madebyvance.vercel.app/#/work","label":"Past Work"},{"type":2,"style":5,"url":"https://madebyvance.vercel.app/#/services","label":"Services"},{"type":2,"style":5,"url":"https://madebyvance.vercel.app/legal","label":"Order Policy"}]}]}}</script>
-<!-- Discord login for the ANI PANEL (Move, under /anipanel/) comes back to the site root with the token in the hash: pass it on.
+<!-- Discord sign-in for the tools (Ani Panel, Hello Glass, Patch Pixelizer) comes back to the site root with the token in the
+     hash: pass it on to the page named in state (see gate/vce-gate.js), else the Ani Panel.
      /legal serves this page too (dev.mjs, vercel.json) and opens the Legal page. -->
-<script>if (/access_token/.test(location.hash)) location.replace('/anipanel/app' + location.hash)
-else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</script>
+<script>if (/access_token=|[#&]error=/.test(location.hash)) {
+  var vceP = ''; try { vceP = atob((new URLSearchParams(location.hash.slice(1)).get('state') || '').split('.')[1].replace(/-/g, '+').replace(/_/g, '/')); } catch (e) {}
+  location.replace((/^\/(?!\/)/.test(vceP) && vceP !== '/' ? vceP : '/anipanel/app') + location.hash);
+} else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</script>
 <link rel="icon" href="assets/brand/favicon.png">
-<link rel="preload" href="assets/fonts/instrument-serif-400.woff2" as="font" type="font/woff2" crossorigin>
+<style>html { background: #fff; }</style>
 <link rel="preload" href="assets/fonts/instrument-serif-400-italic.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/media/poster.jpg" as="image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400&display=block">
+<!-- the crowd's sprite sheet: 15 × 7 Open Peeps -->
+<link rel="preload" as="image" href="https://cdn.21st.dev/assets/localized/abdb8990a7bef8c2f5af3e45f0a3c969c4b0603fba8be92e81347de4ea4e1ed7.png">
 <link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/home.css">
 </head>
 <body class="at-home">
 <main id="app">
-  <section class="scene" aria-label="Vance Creative Enterprises" tabindex="-1">
-    <canvas class="scene-sky" width="48" height="96" aria-hidden="true"></canvas>
-    <video class="scene-video" id="clip" muted playsinline preload="auto" disablepictureinpicture
-           poster="assets/media/poster.jpg" aria-hidden="true"></video>
-    <video class="scene-video is-hidden" id="clipOn" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
-    <div class="scene-tint" aria-hidden="true"></div>
-
-    <div class="hero">
-      <h1 class="headline">
-        <span class="line" style="--k:0"><span>Design that</span></span>
-        <span class="line it" style="--k:1"><span>stays on.</span></span>
-      </h1>
-      <p class="lede"><span class="line" style="--k:2"><span>Vance Creative Enterprises is a one-person design studio in Vancouver, making logos, brand identities and graphics for Discord and Roblox communities.</span></span></p>
-    </div>
-
-    <canvas class="scene-fx" aria-hidden="true"></canvas>
-    <p class="sr-only" aria-live="polite" id="power-status"></p>
-  </section>
+  <!-- Home: the headline up top, a crowd of people walking along the bottom (crowd.js) -->
+  <div class="home" id="home" tabindex="-1">
+    <section class="crowd-hero">
+      <div class="hero-copy">
+        <p class="hero-kicker rv-h" style="--k:0">Vance Creative Enterprises</p>
+        <h1 class="hero-head" aria-label="Design that stays on.">
+          <span class="hl sans rv-h" style="--k:1" aria-hidden="true">Design that</span>
+          <span class="hl serif rv-h" style="--k:2" aria-hidden="true">stays on.</span>
+        </h1>
+        <p class="hero-lede rv-h" style="--k:3">A one-person design studio in Vancouver, making logos, brand identities and graphics for Discord and Roblox communities.</p>
+        <div class="hero-ctas rv-h" style="--k:4">
+          <a class="pill-btn dark" href="#/work">See the work</a>
+          <a class="pill-btn" href="#/contact">Start a commission</a>
+        </div>
+      </div>
+      <canvas class="crowd" id="crowd" data-src="https://cdn.21st.dev/assets/localized/abdb8990a7bef8c2f5af3e45f0a3c969c4b0603fba8be92e81347de4ea4e1ed7.png" role="img" aria-label="Illustrated people walking past"></canvas>
+    </section>
+  </div>
 
   <!-- Inner pages scroll over the scene, Jet PDP style: one scroll container each, swapped behind a wipe -->
   <div class="stage" id="stage">
 
     <div class="page" data-page="work" tabindex="-1">
       <header class="intro-head wrap">
-        <p class="kicker rv">Selected work</p>
-        <h1><span class="t" data-t>THE</span><span class="t it" data-t>WORK</span></h1>
+        <p class="kicker rv">Portfolio</p>
+        <h1><span class="t" data-t>Selected</span><span class="t it" data-t>work.</span></h1>
         <p class="lead rv">Logos, clothing and banners for roleplay and Discord communities, plus a pile of everything else. Pick one to see the whole set.</p>
       </header>
       <h2 class="sr-only">Projects</h2>
       <section class="work-grid wrap" id="workGrid" aria-label="Projects"></section>
-      <a class="next" href="#/about"><small>Next</small><span>ABOUT</span></a>
+      <a class="next" href="#/about"><small>Next</small><span>About</span></a>
       <div class="foot-slot"></div>
     </div>
 
@@ -95,7 +102,7 @@ else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</s
       <header class="page-head">
         <div class="page-title">
           <p class="kicker">About</p>
-          <h1><span class="t" data-t>HI, I&rsquo;M</span><span class="t it" data-t>VANCE</span></h1>
+          <h1><span class="t" data-t>Hi, I&rsquo;m</span><span class="t it" data-t>Vance.</span></h1>
         </div>
         <div class="page-img"><img src="assets/illustrations/coffee.webp" alt="Illustration of a cup of coffee on an open magazine, on a red tiled table"></div>
       </header>
@@ -111,10 +118,10 @@ else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</s
         <img class="rv" src="assets/illustrations/road.webp" alt="Illustration of a person on a roadside looking at a white modern building under red leaves" width="736" height="1308" loading="lazy">
       </section>
       <section class="wrap disciplines">
-        <div class="sec-head rv"><h2><span class="t" data-t>WHAT I</span><span class="t it" data-t>MAKE</span></h2></div>
+        <div class="sec-head rv"><h2><span class="t" data-t>What I</span><span class="t it" data-t>make.</span></h2></div>
         <ol class="rows" id="aboutRows"></ol>
       </section>
-      <a class="next" href="#/services"><small>Next</small><span>SERVICES</span></a>
+      <a class="next" href="#/services"><small>Next</small><span>Services</span></a>
       <div class="foot-slot"></div>
     </div>
 
@@ -122,7 +129,7 @@ else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</s
       <header class="page-head">
         <div class="page-title">
           <p class="kicker">Commissions</p>
-          <h1><span class="t" data-t>HOW TO</span><span class="t it" data-t>ORDER</span></h1>
+          <h1><span class="t" data-t>How to</span><span class="t it" data-t>order.</span></h1>
         </div>
         <div class="page-img"><img src="assets/illustrations/luggage.webp" alt="Illustration of two packed suitcases, red and blue, with a sun hat and a tote bag"></div>
       </header>
@@ -147,7 +154,7 @@ else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</s
         </div>
       </section>
       <section class="wrap faq">
-        <div class="sec-head rv"><h2><span class="t" data-t>GOOD TO</span><span class="t it" data-t>KNOW</span></h2></div>
+        <div class="sec-head rv"><h2><span class="t" data-t>Good to</span><span class="t it" data-t>know.</span></h2></div>
         <div class="faq-list rv">
           <details open><summary>How long does a project take?<i aria-hidden="true"></i></summary><p>Depends on scope. Usually one to three weeks.</p></details>
           <details><summary>Do you take rush orders?<i aria-hidden="true"></i></summary><p>Sometimes, for an added fee.</p></details>
@@ -155,18 +162,22 @@ else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</s
         </div>
         <a class="arrow rv" href="#/contact">Start a commission &rarr;</a>
       </section>
-      <a class="next" href="#/contact"><small>Next</small><span>CONTACT</span></a>
+      <a class="next" href="#/contact"><small>Next</small><span>Contact</span></a>
       <div class="foot-slot"></div>
     </div>
 
     <div class="page" data-page="legal" tabindex="-1">
       <header class="intro-head wrap">
         <p class="kicker rv">Legal</p>
-        <h1><span class="t" data-t>THE FINE</span><span class="t it" data-t>PRINT</span></h1>
+        <h1><span class="t" data-t>The fine</span><span class="t it" data-t>print.</span></h1>
         <p class="lead rv">The rules for ordering, and how this website handles your information. Last updated November 14, 2026.</p>
       </header>
-      <section class="wrap legal">
-        <div class="sec-head rv"><h2><span class="t" data-t>ORDER</span><span class="t it" data-t>POLICIES</span></h2><p>By placing an order you agree to everything below.</p></div>
+      <div class="legal-body wrap">
+      <!-- Contents, built from the sections below by site.js; buttons, since #anchors would read as routes -->
+      <nav class="legal-toc" id="legalToc" aria-label="On this page"></nav>
+      <div class="legal-main">
+      <section class="legal" id="order-policies" data-toc="Order policies">
+        <div class="sec-head rv"><h2><span class="t" data-t>Order</span><span class="t it" data-t>policies.</span></h2><p>By placing an order you agree to everything below.</p></div>
         <ol class="policy rv" aria-label="Order policies">
           <li><span class="num">01</span><div><h3>Payment upfront</h3><p>Payment is due upfront, before any work starts. The amount due (in full or a deposit) is agreed when we scope the order. No payment, no slot: nothing is started, reserved or sketched until it’s paid.</p></div></li>
           <li><span class="num">02</span><div><h3>Robux only, via gamepass</h3><p>I get paid in Robux through a gamepass I set up for your order. I&rsquo;ll add you as a trusted friend on Roblox first, so the purchase goes through without Roblox&rsquo;s limits getting in the way. Payment through any other route isn&rsquo;t valid, and I&rsquo;m not responsible for Robux sent anywhere other than the gamepass I send you.</p></div></li>
@@ -178,14 +189,14 @@ else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</s
           <li><span class="num">08</span><div><h3>Rights reserved</h3><p>I reserve all rights to everything I make, including drafts, concepts and unused work, and to my process, files and this website. A finished, paid order lets you use the final delivered files for the purpose we agreed on; it doesn’t transfer ownership of the underlying files or concepts. I may show finished work in this portfolio and on social media unless we agree otherwise before the order starts. You can’t resell, redistribute or claim authorship of my work, and I can refuse or cancel any order for any reason.</p></div></li>
         </ol>
       </section>
-      <section class="wrap legal">
-        <div class="sec-head rv"><h2><span class="t" data-t>PRIVACY</span><span class="t it" data-t>POLICY</span></h2><p>How this website handles your information.</p></div>
+      <section class="legal" id="privacy-policy" data-toc="Privacy policy">
+        <div class="sec-head rv"><h2><span class="t" data-t>Privacy</span><span class="t it" data-t>policy.</span></h2><p>How this website handles your information.</p></div>
         <ol class="policy rv" aria-label="Privacy policy">
           <li><span class="num">01</span><div><h3>The short version</h3><p>This site has no forms, comments, ads or tracking. I don’t ask for your name or email here, and I don’t collect or sell your personal data.</p></div></li>
           <li><span class="num">02</span><div><h3>What’s stored in your browser</h3><p>The site saves one small thing on your own device, never sent to me: a note that you’ve already seen the “click me” arrow on the home page, so it doesn’t show again. Clearing your browser data removes it. The site sets no cookies of its own.</p></div></li>
           <li><span class="num">03</span><div><h3>Hosting and server logs</h3><p>The site is hosted by a third-party host. Like any web host, it may automatically log technical details about visits, such as IP address, browser type and pages requested, for security and operation. I don’t use those logs to identify or track you, and I have no way to link them to who you are.</p></div></li>
           <li><span class="num">04</span><div><h3>Fonts, video and images</h3><p>Fonts, video and images on this site are served from the site itself, so loading a page doesn’t send your data to outside font or media providers.</p></div></li>
-          <li><span class="num">05</span><div><h3>The Ani Panel</h3><p>The Ani Panel (the logo animator at /anipanel) is a separate tool on this address. It has its own sign-in with Discord and its own privacy and terms page, which cover what it handles.</p></div></li>
+          <li><span class="num">05</span><div><h3>The tools</h3><p>The Ani Panel, Hello Glass and Patch Pixelizer are separate tools on this address, free for members of the Vance Collective Discord server. They ask you to sign in with Discord, which tells them only your name and whether you’re in the server; that sign-in is kept in your own browser for 5 days. The Ani Panel has its own privacy and terms page for what it handles.</p></div></li>
           <li><span class="num">06</span><div><h3>Links to other sites</h3><p>Some links, like the one to my Discord profile, take you to other sites. Those sites have their own privacy policies and I’m not responsible for what they collect.</p></div></li>
           <li><span class="num">07</span><div><h3>Commissions and Discord</h3><p>Orders happen over Discord, so what you share with me there (your Discord username, project details and payment messages) is covered by Discord’s own terms and privacy policy. I only use what you tell me to complete your order and keep a record of it. I don’t sell it or share it, except where I’m legally required to.</p></div></li>
           <li><span class="num">08</span><div><h3>Children</h3><p>This site isn’t directed at children under 13, and I don’t knowingly collect personal information from them.</p></div></li>
@@ -193,7 +204,9 @@ else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</s
           <li><span class="num">10</span><div><h3>Contact</h3><p>Questions about any of this? <a href="https://discord.com/users/1349737404449296414" target="_blank" rel="noreferrer">Message me on Discord</a>.</p></div></li>
         </ol>
       </section>
-      <a class="next" href="#/contact"><small>Questions?</small><span>CONTACT</span></a>
+      </div>
+      </div>
+      <a class="next" href="#/contact"><small>Questions?</small><span>Contact</span></a>
       <div class="foot-slot"></div>
     </div>
 
@@ -201,14 +214,14 @@ else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</s
       <header class="page-head contact-head">
         <div class="page-title">
           <p class="kicker">Contact</p>
-          <h1><span class="t" data-t>SAY</span><span class="t it" data-t>HELLO</span></h1>
+          <h1><span class="t" data-t>Say</span><span class="t it" data-t>hello.</span></h1>
           <p class="lead rv">The quickest way to start is a DM on Discord with what you need, a rough timeline and any references.</p>
           <a class="cta rv" href="https://discord.com/users/1349737404449296414" target="_blank" rel="noreferrer">Message me on Discord <span aria-hidden="true">&nearr;</span></a>
           <p class="cta-note rv">Opens my Discord profile</p>
         </div>
         <div class="page-img"><img src="assets/illustrations/train.webp" alt="Illustration of a red train crossing an arched bridge beside a tall tower at night"></div>
       </header>
-      <a class="next" href="#/work"><small>Back to</small><span>THE WORK</span></a>
+      <a class="next" href="#/work"><small>Back to</small><span>The work</span></a>
       <div class="foot-slot"></div>
     </div>
   </div>
@@ -239,44 +252,73 @@ else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</s
     <div class="halftone" id="halftone" aria-hidden="true"><canvas></canvas></div>
   </footer>
 
-  <button class="power" type="button" aria-pressed="false" aria-label="Vance Creative Enterprises. Power button: switch the scene off">
-    <img class="power-glow" src="assets/brand/wordmark.png" alt="" width="2719" height="680" draggable="false" aria-hidden="true">
-    <img class="power-mark" src="assets/brand/wordmark.png" alt="" width="2719" height="680" draggable="false">
-    <i class="brand-ink" aria-hidden="true"></i>
-    <span class="power-halo" aria-hidden="true"></span>
-  </button>
-
-  <!-- First visit only: a hand-drawn arrow pointing at the logo (site.js) -->
-  <div class="hint" id="hint" aria-hidden="true" hidden>
-    <span class="hint-arrow"><img src="assets/brand/hint-arrow.webp" alt="" width="400" height="400" draggable="false"></span>
-    <p class="hint-text"><span class="hint-verb">Click</span> me<br><em>see what happens</em></p>
-  </div>
-
   <aside class="menu" id="menu" aria-hidden="true" inert>
     <i class="sheet s-dark"></i><i class="sheet s-blue"></i>
     <div class="sheet s-white">
       <ul class="links">
-        <li><a href="#/"><span class="m" style="--k:0"><i>HOME</i></span><sup class="n m" style="--k:1"><i>01</i></sup></a></li>
-        <li><a href="#/work"><span class="m" style="--k:2"><i>WORK</i></span><sup class="n m" style="--k:3"><i>02</i></sup></a></li>
-        <li><a href="#/about"><span class="m" style="--k:4"><i>ABOUT</i></span><sup class="n m" style="--k:5"><i>03</i></sup></a></li>
-        <li><a href="#/services"><span class="m" style="--k:6"><i>SERVICES</i></span><sup class="n m" style="--k:7"><i>04</i></sup></a></li>
-        <li><a href="#/contact"><span class="m" style="--k:8"><i>CONTACT</i></span><sup class="n m" style="--k:9"><i>05</i></sup></a></li>
+        <li><a href="#/"><span class="m" style="--k:0"><i>Home</i></span><sup class="n m" style="--k:1"><i>01</i></sup></a></li>
+        <li><a href="#/work"><span class="m" style="--k:2"><i>Work</i></span><sup class="n m" style="--k:3"><i>02</i></sup></a></li>
+        <li><a href="#/about"><span class="m" style="--k:4"><i>About</i></span><sup class="n m" style="--k:5"><i>03</i></sup></a></li>
+        <li><a href="#/services"><span class="m" style="--k:6"><i>Services</i></span><sup class="n m" style="--k:7"><i>04</i></sup></a></li>
+        <li><a href="#/contact"><span class="m" style="--k:8"><i>Contact</i></span><sup class="n m" style="--k:9"><i>05</i></sup></a></li>
         <!-- The logo animator (Move): /anipanel forwards to wherever it is hosted, see dev.mjs and vercel.json -->
-        <li><a href="/anipanel"><span class="m" style="--k:10"><i>ANI PANEL</i></span><sup class="n m" style="--k:11"><i>06</i></sup></a></li>
+        <li><a href="/anipanel"><span class="m" style="--k:10"><i>Ani Panel</i></span><sup class="n m" style="--k:11"><i>06</i></sup></a></li>
+        <!-- Hello Glass (liquid glass lettering): /helloglass forwards to it the same way, see dev.mjs -->
+        <li><a href="/helloglass/"><span class="m" style="--k:12"><i>Hello Glass</i></span><sup class="n m" style="--k:13"><i>07</i></sup></a></li>
+        <!-- Patch Pixelizer (the badge-pixelizer project, branded Tessera on its own site): /patchpixelizer forwards to it, see dev.mjs -->
+        <li><a href="/patchpixelizer/"><span class="m" style="--k:14"><i>Patch Pixelizer</i></span><sup class="n m" style="--k:15"><i>08</i></sup></a></li>
       </ul>
       <div class="socials">
-        <span class="m soc-label" style="--k:12"><i>SOCIALS</i></span>
+        <span class="m soc-label" style="--k:16"><i>Socials</i></span>
         <div class="soc-row">
-          <a href="https://discord.com/users/1349737404449296414" target="_blank" rel="noreferrer" class="m" style="--k:13"><i>DISCORD</i></a>
-          <a href="#" class="m" style="--k:14" data-noop><i>INSTAGRAM</i></a>
+          <a href="https://discord.com/users/1349737404449296414" target="_blank" rel="noreferrer" class="m" style="--k:17"><i>Discord</i></a>
+          <a href="#" class="m" style="--k:18" data-noop><i>Instagram</i></a>
         </div>
       </div>
     </div>
   </aside>
 
-  <button class="btn-menu" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">
-    <span class="lab"><span class="a">MENU</span><em class="b">CLOSE</em></span><i class="cross" aria-hidden="true"></i>
-  </button>
+  <!-- Search: a search box over everything on the site, grouped (built by site.js) -->
+  <div class="search-scrim" id="searchScrim" aria-hidden="true"></div>
+  <div class="search-panel" id="search" role="dialog" aria-label="Search" aria-hidden="true" inert>
+    <div class="cmd">
+      <div class="cmd-input-row">
+        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="cmdInput" type="text" role="combobox" aria-label="Search the site" aria-controls="cmdList" aria-expanded="true" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search pages, work, tools, policies…">
+        <kbd class="cmd-esc" aria-hidden="true">esc</kbd>
+      </div>
+      <div class="cmd-list" id="cmdList" role="listbox" aria-label="Everything on the site">
+        <span class="cmd-hl" aria-hidden="true"></span>
+        <div class="cmd-content" id="cmdContent"></div>
+        <div class="cmd-empty" id="cmdEmpty" role="status"></div>
+      </div>
+      <div class="cmd-footer" aria-hidden="true">
+        <span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
+        <span><kbd>↵</kbd> Open</span>
+        <span><kbd>esc</kbd> Close</span>
+        <span class="cmd-foot-right"><kbd class="k-mod">⌘</kbd><kbd>K</kbd> from anywhere</span>
+      </div>
+    </div>
+  </div>
+
+  <header class="ice-header" id="iceHeader">
+    <a class="ice-logo" href="#/" aria-label="Vance Creative Enterprises, home"><span class="logo-ink" aria-hidden="true"></span></a>
+    <div class="ice-right">
+      <nav class="ice-pill" aria-label="Main">
+        <a href="#/" data-route="home">Home</a>
+        <a href="#/work" data-route="work">Work</a>
+        <a href="#/about" data-route="about">About</a>
+        <a href="#/services" data-route="services">Services</a>
+      </nav>
+      <button class="ice-search" id="searchBtn" type="button" aria-controls="search" aria-expanded="false" aria-label="Search the site">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="lbl">Search</span><kbd class="k"><span class="k-mod">⌘</span>K</kbd>
+      </button>
+      <button class="ice-menu-round" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+        <svg viewBox="0 0 12 12" aria-hidden="true"><rect width="4" height="4" rx="1"/><rect x="8" width="4" height="4" rx="1"/><rect y="8" width="4" height="4" rx="1"/><rect x="8" y="8" width="4" height="4" rx="1"/></svg>
+      </button>
+    </div>
+  </header>
 
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
     <button class="lb-btn lb-close" type="button" aria-label="Close">Close</button>
@@ -286,10 +328,13 @@ else if (/^\/legal\/?$/.test(location.pathname)) location.replace('/#/legal')</s
   </div>
 
   <div class="wipe" id="wipe" aria-hidden="true"><i></i><i></i><i></i></div>
+
 </main>
 
+
 <script src="assets/js/data.js"></script>
-<script src="assets/js/scene.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/gsap.min.js"></script>
+<script src="assets/js/crowd.js"></script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>
